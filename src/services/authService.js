@@ -3,10 +3,15 @@ const bcrypt = require('bcryptjs');
 
 const SECRET = process.env.JWT_SECRET || 'greenherb_secret';
 
-// utilizadores em memória (substituir por BD no futuro)
 const users = [];
 
 const register = async (username, password, role) => {
+    if (!username || username.trim() === '') {
+        throw new Error('Username inválido');
+    }
+    if (!password || password.trim() === '') {
+        throw new Error('Password inválida');
+    }
     const validRoles = ['Tecnico', 'Responsavel', 'Administrador'];
     if (!validRoles.includes(role)) {
         throw new Error('Perfil inválido');
@@ -22,6 +27,12 @@ const register = async (username, password, role) => {
 };
 
 const login = async (username, password) => {
+    if (!username || username.trim() === '') {
+        throw new Error('Username inválido');
+    }
+    if (!password || password.trim() === '') {
+        throw new Error('Password inválida');
+    }
     const user = users.find(u => u.username === username);
     if (!user) {
         throw new Error('Credenciais inválidas');
