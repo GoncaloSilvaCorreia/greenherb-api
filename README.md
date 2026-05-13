@@ -29,6 +29,12 @@ PORT=3000
 npx jest --coverage
 ```
 
+## Correr o Dashboard
+
+```bash
+node src/app.js
+```
+
 ## Estrutura do Projeto
 greenherb-api/
 ├── src/
