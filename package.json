@@ -5,7 +5,29 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "test:report": "jest --coverage --reporters=default --reporters=jest-html-reporter"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "reporters": [
+      "default",
+      [
+        "jest-html-reporter",
+        {
+          "pageTitle": "GREENHERB - Relatório de Testes",
+          "outputPath": "test-report/index.html",
+          "includeFailureMsg": true,
+          "includeSuiteFailure": true,
+          "includeConsoleLog": true,
+          "theme": "darkTheme",
+          "sort": "titleAsc"
+        }
+      ]
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -13,11 +35,13 @@
   "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
     "jest": "^30.4.1",
+    "jest-html-reporter": "^4.4.0",
     "supertest": "^7.2.2"
   }
 }

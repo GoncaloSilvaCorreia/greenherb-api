@@ -1,29 +1,24 @@
 const express = require('express');
+const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
-/*const usersRoutes = require('./routes/usersRoutes');
 const herbsRoutes = require('./routes/herbsRoutes');
 const plansRoutes = require('./routes/plansRoutes');
-const batchesRoutes = require('./routes/batchesRoutes');
-const tasksRoutes = require('./routes/tasksRoutes');
-const measurementsRoutes = require('./routes/measurementsRoutes');
-const alertsRoutes = require('./routes/alertsRoutes');
-const automationRoutes = require('./routes/automationRoutes');
-const reportsRoutes = require('./routes/reportsRoutes');
-const auditRoutes = require('./routes/auditRoutes');*/
+const { seedHerbs, seedPlans } = require('./data/seed');
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.use('/auth', authRoutes);
-/*app.use('/users', usersRoutes);
 app.use('/herbs', herbsRoutes);
 app.use('/plans', plansRoutes);
-app.use('/batches', batchesRoutes);
-app.use('/tasks', tasksRoutes);
-app.use('/measurements', measurementsRoutes);
-app.use('/alerts', alertsRoutes);
-app.use('/automation', automationRoutes);
-app.use('/reports', reportsRoutes);
-app.use('/audit', auditRoutes);*/
+
+seedHerbs();
+seedPlans();
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor a correr na porta ${PORT}`);
+});
 
 module.exports = app;

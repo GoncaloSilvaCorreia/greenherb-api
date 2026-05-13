@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>GREENHERB Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:system-ui,sans-serif;background:#f5f5f5;color:#1a1a1a}
+
+        /* ===== LOGIN PAGE ===== */
+        .login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f5}
+        .login-card{background:#fff;border:1px solid #e5e5e5;border-radius:16px;padding:2.5rem;width:380px}
+        .login-logo{text-align:center;margin-bottom:2rem}
+        .login-logo h1{font-size:22px;font-weight:500;margin-bottom:4px}
+        .login-logo span{font-size:13px;color:#888}
+        .login-logo .icon{font-size:40px;color:#166534;display:block;margin-bottom:0.75rem}
+        .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
+        .form-group label{font-size:12px;color:#666;font-weight:500}
+        .form-group input,.form-group select{font-size:14px;padding:10px 12px;border-radius:8px;border:1px solid #e5e5e5;outline:none;background:#fff;color:#1a1a1a;width:100%}
+        .form-group input:focus,.form-group select:focus{border-color:#1D4ED8;box-shadow:0 0 0 3px #EFF6FF}
+        .btn{padding:10px 16px;border-radius:8px;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid #e5e5e5;background:#fff;color:#1a1a1a;width:100%;transition:all 0.15s}
+        .btn-primary{background:#166534;color:#fff;border-color:#166534}
+        .btn-primary:hover{background:#14532d}
+        .btn-secondary{background:#fff;color:#1a1a1a;border-color:#e5e5e5}
+        .btn-secondary:hover{background:#f5f5f5}
+        .btn-danger{background:#FEF2F2;color:#991B1B;border-color:#FECACA}
+        .btn-danger:hover{background:#FEE2E2}
+        .btn-sm{padding:8px 14px;font-size:13px;width:auto}
+        .alert{padding:0.75rem 1rem;border-radius:8px;font-size:13px;display:none;align-items:center;gap:8px;margin-top:1rem}
+        .alert.success{background:#F0FDF4;color:#166534;border:1px solid #BBF7D0;display:flex}
+        .alert.error{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;display:flex}
+        .divider{height:1px;background:#e5e5e5;margin:1.5rem 0;position:relative;text-align:center}
+        .divider span{background:#fff;padding:0 0.75rem;font-size:12px;color:#888;position:relative;top:-9px}
+
+        /* ===== DASHBOARD ===== */
+        .dashboard{display:none;flex;height:100vh}
+        .sidebar{width:230px;background:#fff;border-right:1px solid #e5e5e5;display:flex;flex-direction:column;padding:1rem 0;flex-shrink:0}
+        .logo{padding:0 1rem 1rem;border-bottom:1px solid #e5e5e5;margin-bottom:0.5rem}
+        .logo h1{font-size:15px;font-weight:500;display:flex;align-items:center;gap:8px}
+        .logo span{font-size:12px;color:#888}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 1rem;cursor:pointer;font-size:14px;color:#666;border-left:3px solid transparent}
+        .nav-item:hover{background:#f5f5f5;color:#1a1a1a}
+        .nav-item.active{background:#F0FDF4;color:#166534;border-left-color:#166534}
+        .nav-item i{font-size:18px}
+        .main{flex:1;overflow-y:auto;padding:1.5rem}
+        .page{display:none}
+        .page.active{display:block}
+        .page-title{font-size:18px;font-weight:500;margin-bottom:1.5rem}
+        .card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+        .card h3{font-size:14px;font-weight:500;margin-bottom:1rem}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+        .url-badge{font-size:11px;font-family:monospace;background:#F5F5F5;padding:3px 8px;border-radius:6px;color:#666}
+        .tab-bar{display:flex;gap:4px;margin-bottom:1rem;border-bottom:1px solid #e5e5e5}
+        .tab{padding:8px 16px;font-size:13px;cursor:pointer;color:#666;border-bottom:2px solid transparent;margin-bottom:-1px}
+        .tab.active{color:#166534;border-bottom-color:#166534}
+        .tab-content{display:none}
+        .tab-content.active{display:block}
+        .list-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e5e5e5;font-size:13px}
+        .list-item:last-child{border-bottom:none}
+        .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:12px;font-weight:500}
+        .badge-info{background:#EFF6FF;color:#1D4ED8}
+        .badge-success{background:#F0FDF4;color:#166534}
+        .badge-warning{background:#FFFBEB;color:#92400E}
+        .badge-danger{background:#FEF2F2;color:#991B1B}
+        .sidebar-bottom{padding:1rem;border-top:1px solid #e5e5e5;margin-top:auto}
+        .user-info{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+        .user-avatar{width:32px;height:32px;border-radius:50%;background:#F0FDF4;color:#166534;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;border:1px solid #BBF7D0}
+        .user-details .name{font-size:13px;font-weight:500}
+        .user-details .role{font-size:11px;color:#888}
+        .token-box{background:#F5F5F5;border-radius:8px;padding:0.75rem;font-size:12px;font-family:monospace;word-break:break-all;color:#666;margin-top:0.75rem}
+    </style>
+</head>
+<body>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div class="login-page" id="login-page">
+    <div class="login-card">
+        <div class="login-logo">
+            <i class="ti ti-leaf icon"></i>
+            <h1>GREENHERB</h1>
+            <span>Plataforma de Gestão de Estufa</span>
+        </div>
+
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="login-username" placeholder="Introduz o teu username" />
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()" />
+        </div>
+        <button class="btn btn-primary" onclick="doLogin()">
+            <i class="ti ti-login"></i> Entrar
+        </button>
+        <div class="alert" id="login-alert"></div>
+
+        <div class="divider"><span>ou</span></div>
+
+        <button class="btn btn-secondary" onclick="showRegister()">
+            <i class="ti ti-user-plus"></i> Criar conta
+        </button>
+
+        <!-- REGISTO (escondido por defeito) -->
+        <div id="register-section" style="display:none;margin-top:1.5rem">
+            <div style="font-size:14px;font-weight:500;margin-bottom:1rem">Nova conta</div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="reg-username" placeholder="Escolhe um username" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="reg-password" placeholder="••••••••" />
+            </div>
+            <div class="form-group">
+                <label>Perfil</label>
+                <select id="reg-role">
+                    <option value="">Seleciona um perfil</option>
+                    <option value="Tecnico">Tecnico</option>
+                    <option value="Responsavel">Responsavel</option>
+                    <option value="Administrador">Administrador</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="doRegister()">
+                <i class="ti ti-user-plus"></i> Registar
+            </button>
+            <div class="alert" id="register-alert"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div class="dashboard" id="dashboard">
+    <div class="sidebar">
+        <div class="logo">
+            <h1><i class="ti ti-leaf" style="color:#166534"></i> GREENHERB</h1>
+            <span>API Dashboard</span>
+        </div>
+        <div class="nav-item active" onclick="showPage('herbs')" id="nav-herbs">
+            <i class="ti ti-plant"></i> Ervas
+        </div>
+        <div class="nav-item" onclick="showPage('plans')" id="nav-plans">
+            <i class="ti ti-clipboard-list"></i> Planos
+        </div>
+        <div class="nav-item" onclick="showPage('account')" id="nav-account">
+            <i class="ti ti-user"></i> Conta
+        </div>
+        <div class="sidebar-bottom">
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar"></div>
+                <div class="user-details">
+                    <div class="name" id="user-name-display"></div>
+                    <div class="role" id="user-role-display"></div>
+                </div>
+            </div>
+            <button class="btn btn-danger btn-sm" style="width:100%" onclick="doLogout()">
+                <i class="ti ti-logout"></i> Terminar sessão
+            </button>
+        </div>
+    </div>
+
+    <div class="main">
+
+        <!-- HERBS PAGE -->
+        <div class="page active" id="page-herbs">
+            <div class="page-title">Ervas Aromáticas</div>
+            <div class="tab-bar">
+                <div class="tab active" onclick="showTab('herbs','create',this)">Criar erva</div>
+                <div class="tab" onclick="showTab('herbs','import',this)">Importar CSV</div>
+                <div class="tab" onclick="showTab('herbs','list',this)">Listar</div>
+            </div>
+
+            <div class="tab-content active" id="herbs-create">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Nova erva aromática</h3>
+                        <span class="url-badge">POST /herbs</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome</label>
+                            <input type="text" id="herb-name" placeholder="ex: Hortelã" />
+                        </div>
+                        <div class="form-group">
+                            <label>Nome científico</label>
+                            <input type="text" id="herb-sci" placeholder="ex: Mentha spicata" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px">
+                        <label>Duração do ciclo (dias) [1-365]</label>
+                        <input type="number" id="herb-cycle" placeholder="ex: 90" min="1" max="365" />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Temp. mínima (ºC)</label>
+                            <input type="number" id="herb-mintemp" placeholder="ex: 15" />
+                        </div>
+                        <div class="form-group">
+                            <label>Temp. máxima (ºC)</label>
+                            <input type="number" id="herb-maxtemp" placeholder="ex: 25" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Humidade mínima (%)</label>
+                            <input type="number" id="herb-minhum" placeholder="ex: 50" />
+                        </div>
+                        <div class="form-group">
+                            <label>Humidade máxima (%)</label>
+                            <input type="number" id="herb-maxhum" placeholder="ex: 70" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Luminosidade mínima (lux)</label>
+                            <input type="number" id="herb-minlux" placeholder="ex: 5000" />
+                        </div>
+                        <div class="form-group">
+                            <label>Luminosidade máxima (lux)</label>
+                            <input type="number" id="herb-maxlux" placeholder="ex: 20000" />
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="doCreateHerb()">
+                        <i class="ti ti-plus"></i> Criar erva
+                    </button>
+                    <div class="alert" id="herb-create-alert"></div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="herbs-import">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Importar ervas via CSV</h3>
+                        <span class="url-badge">POST /herbs/import</span>
+                    </div>
+                    <p style="font-size:13px;color:#666;margin-bottom:1rem">Simula a importação de um ficheiro CSV com ervas aromáticas.</p>
+                    <div class="form-group" style="margin-bottom:1rem">
+                        <label>Seleciona o cenário de teste</label>
+                        <select id="import-scenario">
+                            <option value="valid">Todas as linhas válidas (2 ervas)</option>
+                            <option value="mixed">Linhas mistas (1 válida + 1 inválida)</option>
+                            <option value="invalid">Todas inválidas (nome vazio)</option>
+                            <option value="empty">Ficheiro vazio</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="doImport()">
+                        <i class="ti ti-upload"></i> Importar
+                    </button>
+                    <div class="alert" id="import-alert"></div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="herbs-list">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Ervas registadas</h3>
+                        <span class="url-badge">GET /herbs</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="listHerbs()" style="margin-bottom:1rem">
+                        <i class="ti ti-refresh"></i> Atualizar
+                    </button>
+                    <div id="herbs-list-content">
+                        <p style="font-size:13px;color:#666">Clica em "Atualizar" para ver as ervas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLANS PAGE -->
+        <div class="page" id="page-plans">
+            <div class="page-title">Planos de Cultivo</div>
+            <div class="tab-bar">
+                <div class="tab active" onclick="showTab('plans','create',this)">Criar plano</div>
+                <div class="tab" onclick="showTab('plans','list',this)">Listar</div>
+            </div>
+
+            <div class="tab-content active" id="plans-create">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Novo plano de cultivo</h3>
+                        <span class="url-badge">POST /plans</span>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px">
+                        <label>Tipo de plano</label>
+                        <select id="plan-type" onchange="toggleAuth()">
+                            <option value="">Seleciona um tipo</option>
+                            <option value="regular">Regular</option>
+                            <option value="emergencia">Emergência</option>
+                            <option value="pontual">Pontual</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px;display:none" id="auth-field">
+                        <label>Autorização do Responsável Técnico</label>
+                        <input type="text" id="plan-auth" placeholder="ex: responsavel1" />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Temp. mínima (ºC) [18-28]</label>
+                            <input type="number" id="plan-mintemp" placeholder="ex: 18" />
+                        </div>
+                        <div class="form-group">
+                            <label>Temp. máxima (ºC) [18-28]</label>
+                            <input type="number" id="plan-maxtemp" placeholder="ex: 25" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Humidade mínima (%) [40-80]</label>
+                            <input type="number" id="plan-minhum" placeholder="ex: 40" />
+                        </div>
+                        <div class="form-group">
+                            <label>Humidade máxima (%) [40-80]</label>
+                            <input type="number" id="plan-maxhum" placeholder="ex: 70" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Luminosidade mínima (lux) [5000-25000]</label>
+                            <input type="number" id="plan-minlux" placeholder="ex: 5000" />
+                        </div>
+                        <div class="form-group">
+                            <label>Luminosidade máxima (lux) [5000-25000]</label>
+                            <input type="number" id="plan-maxlux" placeholder="ex: 20000" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px">
+                        <label>Duração do ciclo (dias) [1-365]</label>
+                        <input type="number" id="plan-cycle" placeholder="ex: 90" />
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="doCreatePlan()">
+                        <i class="ti ti-plus"></i> Criar plano
+                    </button>
+                    <div class="alert" id="plan-create-alert"></div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="plans-list">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Planos registados</h3>
+                        <span class="url-badge">GET /plans</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="listPlans()" style="margin-bottom:1rem">
+                        <i class="ti ti-refresh"></i> Atualizar
+                    </button>
+                    <div id="plans-list-content">
+                        <p style="font-size:13px;color:#666">Clica em "Atualizar" para ver os planos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCOUNT PAGE -->
+        <div class="page" id="page-account">
+            <div class="page-title">Conta</div>
+            <div class="tab-bar">
+                <div class="tab active" onclick="showTab('account','info',this)">Informação</div>
+                <div class="tab" onclick="showTab('account','refresh',this)">Refresh Token</div>
+                <div class="tab" onclick="showTab('account','register',this)">Registar utilizador</div>
+            </div>
+
+            <div class="tab-content active" id="account-info">
+                <div class="card">
+                    <h3>Sessão atual</h3>
+                    <div class="list-item">
+                        <span style="color:#666">Username</span>
+                        <span id="info-username" style="font-weight:500"></span>
+                    </div>
+                    <div class="list-item">
+                        <span style="color:#666">Perfil</span>
+                        <span id="info-role"></span>
+                    </div>
+                    <div class="list-item">
+                        <span style="color:#666">Token</span>
+                        <span style="font-size:12px;font-family:monospace;color:#666" id="info-token"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="account-refresh">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Renovar token</h3>
+                        <span class="url-badge">POST /auth/refresh</span>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px">
+                        <label>Refresh Token</label>
+                        <input type="text" id="refresh-token-input" placeholder="Cole aqui o refresh token" />
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="doRefresh()">
+                        <i class="ti ti-refresh"></i> Renovar
+                    </button>
+                    <div class="alert" id="refresh-alert"></div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="account-register">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Registar novo utilizador</h3>
+                        <span class="url-badge">POST /auth/register</span>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px">
+                        <label>Username</label>
+                        <input type="text" id="new-reg-username" placeholder="ex: joao" />
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px">
+                        <label>Password</label>
+                        <input type="password" id="new-reg-password" placeholder="••••••" />
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px">
+                        <label>Perfil</label>
+                        <select id="new-reg-role">
+                            <option value="">Seleciona um perfil</option>
+                            <option value="Tecnico">Tecnico</option>
+                            <option value="Responsavel">Responsavel</option>
+                            <option value="Administrador">Administrador</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="doRegisterNew()">
+                        <i class="ti ti-user-plus"></i> Registar
+                    </button>
+                    <div class="alert" id="new-register-alert"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const API = 'http://localhost:3000';
+    let token = null;
+    let refreshToken = null;
+    let currentUser = null;
+
+    function showAlert(id, message, isError) {
+      const el = document.getElementById(id);
+      el.className = 'alert ' + (isError ? 'error' : 'success');
+      el.innerHTML = '<i class="ti ti-' + (isError ? 'alert-circle' : 'circle-check') + '"></i> ' + message;
+    }
+
+    function showRegister() {
+      const s = document.getElementById('register-section');
+      s.style.display = s.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function showPage(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      document.getElementById('nav-' + page).classList.add('active');
+    }
+
+    function showTab(page, tab, el) {
+      document.querySelectorAll('#page-' + page + ' .tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('#page-' + page + ' .tab-content').forEach(t => t.classList.remove('active'));
+      document.getElementById(page + '-' + tab).classList.add('active');
+      el.classList.add('active');
+    }
+
+    function toggleAuth() {
+      const type = document.getElementById('plan-type').value;
+      document.getElementById('auth-field').style.display = type === 'pontual' ? 'flex' : 'none';
+    }
+
+    function enterDashboard(username, role) {
+      currentUser = { username, role };
+      document.getElementById('login-page').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'flex';
+      document.getElementById('user-name-display').textContent = username;
+      document.getElementById('user-role-display').textContent = role;
+      document.getElementById('user-avatar').textContent = username.substring(0,2).toUpperCase();
+      document.getElementById('info-username').textContent = username;
+      document.getElementById('info-role').innerHTML = '<span class="badge badge-success">' + role + '</span>';
+      document.getElementById('info-token').textContent = token.substring(0,30) + '...';
+    }
+
+    function doLogout() {
+      token = null;
+      refreshToken = null;
+      currentUser = null;
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('login-page').style.display = 'flex';
+      document.getElementById('login-username').value = '';
+      document.getElementById('login-password').value = '';
+    }
+
+    async function apiCall(method, endpoint, body) {
+      try {
+        const opts = { method, headers: { 'Content-Type': 'application/json' } };
+        if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+        if (body) opts.body = JSON.stringify(body);
+        const res = await fetch(API + endpoint, opts);
+        const data = await res.json();
+        return { ok: res.ok, status: res.status, data };
+      } catch(e) {
+        return { ok: false, status: 0, data: { error: 'Não foi possível conectar à API. Certifica-te que o servidor está a correr em localhost:3000' } };
+      }
+    }
+
+    async function doLogin() {
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+      const r = await apiCall('POST', '/auth/login', { username, password });
+      if (r.ok) {
+        token = r.data.token;
+        refreshToken = r.data.refreshToken;
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        enterDashboard(username, payload.role);
+      } else {
+        showAlert('login-alert', r.data.error || 'Credenciais inválidas.', true);
+      }
+    }
+
+    async function doRegister() {
+      const username = document.getElementById('reg-username').value;
+      const password = document.getElementById('reg-password').value;
+      const role = document.getElementById('reg-role').value;
+      const r = await apiCall('POST', '/auth/register', { username, password, role });
+      if (r.ok) {
+        showAlert('register-alert', 'Conta criada! Podes agora fazer login.', false);
+        document.getElementById('reg-username').value = '';
+        document.getElementById('reg-password').value = '';
+        document.getElementById('reg-role').value = '';
+      } else {
+        showAlert('register-alert', r.data.error || 'Erro ao criar conta.', true);
+      }
+    }
+
+    async function doRegisterNew() {
+      const username = document.getElementById('new-reg-username').value;
+      const password = document.getElementById('new-reg-password').value;
+      const role = document.getElementById('new-reg-role').value;
+      const r = await apiCall('POST', '/auth/register', { username, password, role });
+      if (r.ok) {
+        showAlert('new-register-alert', 'Utilizador "' + username + '" registado com perfil ' + role + '.', false);
+        document.getElementById('new-reg-username').value = '';
+        document.getElementById('new-reg-password').value = '';
+        document.getElementById('new-reg-role').value = '';
+      } else {
+        showAlert('new-register-alert', r.data.error || 'Erro ao registar utilizador.', true);
+      }
+    }
+
+    async function doRefresh() {
+      const rt = document.getElementById('refresh-token-input').value || refreshToken;
+      if (!rt) { showAlert('refresh-alert', 'Sem refresh token disponível.', true); return; }
+      const r = await apiCall('POST', '/auth/refresh', { refreshToken: rt });
+      if (r.ok) {
+        token = r.data.token;
+        document.getElementById('info-token').textContent = token.substring(0,30) + '...';
+        showAlert('refresh-alert', 'Token renovado com sucesso!', false);
+      } else {
+        showAlert('refresh-alert', r.data.error || 'Erro ao renovar token.', true);
+      }
+    }
+
+    async function doCreateHerb() {
+      const body = {
+        name: document.getElementById('herb-name').value,
+        scientificName: document.getElementById('herb-sci').value,
+        cycledays: parseInt(document.getElementById('herb-cycle').value),
+        minTemp: parseFloat(document.getElementById('herb-mintemp').value),
+        maxTemp: parseFloat(document.getElementById('herb-maxtemp').value),
+        minHumidity: parseFloat(document.getElementById('herb-minhum').value),
+        maxHumidity: parseFloat(document.getElementById('herb-maxhum').value),
+        minLuminosity: parseFloat(document.getElementById('herb-minlux').value),
+        maxLuminosity: parseFloat(document.getElementById('herb-maxlux').value),
+      };
+      const r = await apiCall('POST', '/herbs', body);
+      if (r.ok) {
+        showAlert('herb-create-alert', 'Erva "' + body.name + '" criada com sucesso!', false);
+        ['herb-name','herb-sci','herb-cycle','herb-mintemp','herb-maxtemp','herb-minhum','herb-maxhum','herb-minlux','herb-maxlux'].forEach(id => document.getElementById(id).value = '');
+      } else {
+        showAlert('herb-create-alert', r.data.error || 'Erro ao criar erva.', true);
+      }
+    }
+
+    async function doImport() {
+      const scenario = document.getElementById('import-scenario').value;
+      const scenarios = {
+        valid: [
+          { name: 'Hortelã', scientificName: 'Mentha spicata', cycledays: 90, minTemp: 15, maxTemp: 25, minHumidity: 50, maxHumidity: 70, minLuminosity: 5000, maxLuminosity: 20000 },
+          { name: 'Manjericão', scientificName: 'Ocimum basilicum', cycledays: 60, minTemp: 18, maxTemp: 30, minHumidity: 40, maxHumidity: 60, minLuminosity: 8000, maxLuminosity: 22000 }
+        ],
+        mixed: [
+          { name: '', scientificName: 'Mentha spicata', cycledays: 90, minTemp: 15, maxTemp: 25, minHumidity: 50, maxHumidity: 70, minLuminosity: 5000, maxLuminosity: 20000 },
+          { name: 'Manjericão', scientificName: 'Ocimum basilicum', cycledays: 60, minTemp: 18, maxTemp: 30, minHumidity: 40, maxHumidity: 60, minLuminosity: 8000, maxLuminosity: 22000 }
+        ],
+        invalid: [{ name: '', scientificName: '', cycledays: 0, minTemp: 0, maxTemp: 0, minHumidity: 0, maxHumidity: 0, minLuminosity: 0, maxLuminosity: 0 }],
+        empty: []
+      };
+      const r = await apiCall('POST', '/herbs/import', { rows: scenarios[scenario] });
+      if (r.ok) {
+        showAlert('import-alert', 'Importação concluída: ' + r.data.success + ' importadas, ' + r.data.failed + ' falharam.', r.data.failed > 0 && r.data.success === 0);
+      } else {
+        showAlert('import-alert', r.data.error || 'Erro na importação.', true);
+      }
+    }
+
+    async function listHerbs() {
+      const r = await apiCall('GET', '/herbs');
+      const el = document.getElementById('herbs-list-content');
+      if (!r.ok) { el.innerHTML = '<p style="font-size:13px;color:#991B1B">' + (r.data.error || 'Erro.') + '</p>'; return; }
+      const list = Array.isArray(r.data) ? r.data : [];
+      if (list.length === 0) { el.innerHTML = '<p style="font-size:13px;color:#666">Nenhuma erva registada.</p>'; return; }
+      el.innerHTML = list.map(h => `
+        <div class="list-item">
+          <div>
+            <div style="font-weight:500">${h.name}</div>
+            <div style="font-size:12px;color:#666">${h.scientificName} · ${h.cycledays} dias · ${h.minTemp}-${h.maxTemp}ºC</div>
+          </div>
+          <span class="badge badge-success">ID: ${h.id}</span>
+        </div>`).join('');
+    }
+
+    async function doCreatePlan() {
+      const body = {
+        type: document.getElementById('plan-type').value,
+        minTemp: parseFloat(document.getElementById('plan-mintemp').value),
+        maxTemp: parseFloat(document.getElementById('plan-maxtemp').value),
+        minHumidity: parseFloat(document.getElementById('plan-minhum').value),
+        maxHumidity: parseFloat(document.getElementById('plan-maxhum').value),
+        minLuminosity: parseFloat(document.getElementById('plan-minlux').value),
+        maxLuminosity: parseFloat(document.getElementById('plan-maxlux').value),
+        cycleDays: parseInt(document.getElementById('plan-cycle').value),
+        authorizedBy: document.getElementById('plan-auth').value || null,
+      };
+      const r = await apiCall('POST', '/plans', body);
+      if (r.ok) {
+        showAlert('plan-create-alert', 'Plano ' + body.type + ' criado com sucesso!', false);
+        ['plan-mintemp','plan-maxtemp','plan-minhum','plan-maxhum','plan-minlux','plan-maxlux','plan-cycle','plan-auth'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('plan-type').value = '';
+        document.getElementById('auth-field').style.display = 'none';
+      } else {
+        showAlert('plan-create-alert', r.data.error || 'Erro ao criar plano.', true);
+      }
+    }
+
+    async function listPlans() {
+      const r = await apiCall('GET', '/plans');
+      const el = document.getElementById('plans-list-content');
+      if (!r.ok) { el.innerHTML = '<p style="font-size:13px;color:#991B1B">' + (r.data.error || 'Erro.') + '</p>'; return; }
+      const list = Array.isArray(r.data) ? r.data : [];
+      if (list.length === 0) { el.innerHTML = '<p style="font-size:13px;color:#666">Nenhum plano registado.</p>'; return; }
+      const badges = { regular: 'badge-info', emergencia: 'badge-danger', pontual: 'badge-warning' };
+      el.innerHTML = list.map(p => `
+        <div class="list-item">
+          <div>
+            <div style="font-weight:500">Plano #${p.id}</div>
+            <div style="font-size:12px;color:#666">Temp: ${p.minTemp}-${p.maxTemp}ºC · Hum: ${p.minHumidity}-${p.maxHumidity}% · ${p.cycleDays} dias</div>
+          </div>
+          <span class="badge ${badges[p.type] || 'badge-info'}">${p.type}</span>
+        </div>`).join('');
+    }
+</script>
+</body>
+</html>
