@@ -159,3 +159,35 @@ describe('createPlan - Valores Limite (cycleDays)', () => {
         ).toThrow('Duração do ciclo inválida');
     });
 });
+
+// ===== COBERTURA DE CONDIÇÕES MÚLTIPLAS - PLANO PONTUAL =====
+// Decisão: if (type === 'pontual' && !authorizedBy)
+// C1: type === 'pontual'
+// C2: !authorizedBy (sem autorização)
+describe('createPlan - Condições Múltiplas (plano pontual)', () => {
+
+    // C1=F, C2=F → aceita (não é pontual, tem autorização)
+    test('TU54 - CM: tipo regular com autorização deve ser aceite', () => {
+        const plan = plansService.createPlan('regular', 18, 25, 40, 70, 5000, 20000, 90, 'responsavel1');
+        expect(plan.type).toBe('regular');
+    });
+
+    // C1=F, C2=T → aceita (não é pontual, sem autorização)
+    test('TU55 - CM: tipo regular sem autorização deve ser aceite', () => {
+        const plan = plansService.createPlan('regular', 18, 25, 40, 70, 5000, 20000, 90, null);
+        expect(plan.type).toBe('regular');
+    });
+
+    // C1=T, C2=F → aceita (é pontual, tem autorização)
+    test('TU56 - CM: tipo pontual com autorização deve ser aceite', () => {
+        const plan = plansService.createPlan('pontual', 18, 25, 40, 70, 5000, 20000, 90, 'responsavel1');
+        expect(plan.type).toBe('pontual');
+    });
+
+    // C1=T, C2=T → rejeita (é pontual, sem autorização)
+    test('TU57 - CM: tipo pontual sem autorização deve lançar erro', () => {
+        expect(() =>
+            plansService.createPlan('pontual', 18, 25, 40, 70, 5000, 20000, 90, null)
+        ).toThrow('Plano pontual requer autorização do Responsável Técnico');
+    });
+});
