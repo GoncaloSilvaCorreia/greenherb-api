@@ -158,6 +158,164 @@
 
 ---
 
+## Sprint 3 — Medições, Alertas, Lotes e Automação
+
+### Medições (/measurements)
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | Input | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|-------|--------------------|---------------|
+| TU79 | RN-13: medição válida criada | `POST /measurements` | Unidade | PE (classe válida) | `{ temp: 23, humidity: 60, luminosity: 15000, batchId: 1 }` | Medição criada com id definido | Nenhuma |
+| TU80 | RN-13: temperatura NaN rejeitada | `POST /measurements` | Unidade | PE (classe inválida) | `{ temp: NaN, ... }` | Erro: "Temperatura inválida" | Nenhuma |
+| TU81 | RN-13: humidade NaN rejeitada | `POST /measurements` | Unidade | PE (classe inválida) | `{ humidity: NaN, ... }` | Erro: "Humidade inválida" | Nenhuma |
+| TU82 | RN-13: luminosidade NaN rejeitada | `POST /measurements` | Unidade | PE (classe inválida) | `{ luminosity: NaN, ... }` | Erro: "Luminosidade inválida" | Nenhuma |
+| TU83 | RN-13: sem lote rejeitado | `POST /measurements` | Unidade | PE (classe inválida) | `{ batchId: null, ... }` | Erro: "Lote inválido" | Nenhuma |
+| TU84 | RN-14: temperatura = -51 (abaixo do limite) | `POST /measurements` | Unidade | VL (abaixo limite inferior) | `{ temp: -51, ... }` | Erro: "Temperatura fora do intervalo aceitável" | Nenhuma |
+| TU85 | RN-14: temperatura = -50 (limite inferior) | `POST /measurements` | Unidade | VL (limite inferior) | `{ temp: -50, ... }` | Medição criada com temperature = -50 | Nenhuma |
+| TU86 | RN-14: temperatura = 23 (valor nominal) | `POST /measurements` | Unidade | VL (valor nominal) | `{ temp: 23, ... }` | Medição criada com temperature = 23 | Nenhuma |
+| TU87 | RN-14: temperatura = 100 (limite superior) | `POST /measurements` | Unidade | VL (limite superior) | `{ temp: 100, ... }` | Medição criada com temperature = 100 | Nenhuma |
+| TU88 | RN-14: temperatura = 101 (acima do limite) | `POST /measurements` | Unidade | VL (acima limite superior) | `{ temp: 101, ... }` | Erro: "Temperatura fora do intervalo aceitável" | Nenhuma |
+| TU89 | RN-13: medição completa sem erros | `POST /measurements` | Unidade | PE (classe válida) | `{ temp: 23, humidity: 60, luminosity: 15000 }` | `errors.length === 0` | Nenhuma |
+| TU90 | RN-13: temperatura em falta gera erro | `POST /measurements` | Unidade | PE (classe inválida) | `{ temp: null, ... }` | `errors` contém "Temperatura em falta" | Nenhuma |
+| TU91 | RN-13: humidade em falta gera erro | `POST /measurements` | Unidade | PE (classe inválida) | `{ humidity: null, ... }` | `errors` contém "Humidade em falta" | Nenhuma |
+| TU92 | RN-13: luminosidade em falta gera erro | `POST /measurements` | Unidade | PE (classe inválida) | `{ luminosity: null, ... }` | `errors` contém "Luminosidade em falta" | Nenhuma |
+| TU93 | RN-13: múltiplos campos em falta | `POST /measurements` | Unidade | PE (classe inválida) | `{ temp: null, humidity: null, luminosity: null }` | `errors.length === 3` | Nenhuma |
+
+### Alertas (/alerts)
+
+#### Classificação de Alertas — Condições Múltiplas
+
+**Expressão lógica:** `classifyAlert(temp, humidity, luminosity, plan)`
+
+**Condições atómicas:**
+- C1: `tempViolation` — temperatura fora dos limites do plano
+- C2: `humidityViolation` — humidade fora dos limites do plano
+- C3: `luminosityViolation` — luminosidade fora dos limites do plano
+
+**Regra de severidade:** 0 violações → null; 1 → Informativo; 2 → Aviso; 3 → Critico
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | C1 | C2 | C3 | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|----|----|----|--------------------|---------------|
+| TU58 | RN-15: sem violações → null | `POST /alerts` | Unidade | CM (0 violações) | F | F | F | null (sem alerta) | Nenhuma |
+| TU59 | RN-15: só temperatura → Informativo | `POST /alerts` | Unidade | CM (1 violação) | T | F | F | "Informativo" | Nenhuma |
+| TU60 | RN-15: só humidade → Informativo | `POST /alerts` | Unidade | CM (1 violação) | F | T | F | "Informativo" | Nenhuma |
+| TU61 | RN-15: só luminosidade → Informativo | `POST /alerts` | Unidade | CM (1 violação) | F | F | T | "Informativo" | Nenhuma |
+| TU62 | RN-15: temp + humidade → Aviso | `POST /alerts` | Unidade | CM (2 violações) | T | T | F | "Aviso" | Nenhuma |
+| TU63 | RN-15: temp + luminosidade → Aviso | `POST /alerts` | Unidade | CM (2 violações) | T | F | T | "Aviso" | Nenhuma |
+| TU64 | RN-15: humidade + luminosidade → Aviso | `POST /alerts` | Unidade | CM (2 violações) | F | T | T | "Aviso" | Nenhuma |
+| TU65 | RN-15: todas violadas → Critico | `POST /alerts` | Unidade | CM (3 violações) | T | T | T | "Critico" | Nenhuma |
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | Input | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|-------|--------------------|---------------|
+| TU66 | RN-16: classificação Informativo válida | `POST /alerts` | Unidade | PE (classe válida) | `{ classification: "Informativo", ... }` | Alerta criado com status "pendente" | Nenhuma |
+| TU67 | RN-16: classificação Aviso válida | `POST /alerts` | Unidade | PE (classe válida) | `{ classification: "Aviso", ... }` | Alerta criado com classification = "Aviso" | Nenhuma |
+| TU68 | RN-16: classificação Critico válida | `POST /alerts` | Unidade | PE (classe válida) | `{ classification: "Critico", ... }` | Alerta criado com classification = "Critico" | Nenhuma |
+| TU69 | RN-16: classificação inválida rejeitada | `POST /alerts` | Unidade | PE (classe inválida) | `{ classification: "Urgente", ... }` | Erro: "Classificação de alerta inválida" | Nenhuma |
+| TU70 | RN-16: mensagem vazia rejeitada | `POST /alerts` | Unidade | PE (classe inválida) | `{ message: "", ... }` | Erro: "Mensagem inválida" | Nenhuma |
+| TU71 | RN-17: Resolvido sem justificação aceite | `PATCH /alerts/:id` | Unidade | PE (classe válida) | `{ decision: "Resolvido", justification: null }` | status = "resolvido" | Alerta pendente existente |
+| TU72 | RN-17: Ignorado com justificação = 9 chars rejeitado | `PATCH /alerts/:id` | Unidade | VL (abaixo limite inferior) | `{ decision: "Ignorado", justification: "123456789" }` | Erro: "Justificação obrigatória" | Alerta pendente existente |
+| TU73 | RN-17: Ignorado com justificação = 10 chars aceite | `PATCH /alerts/:id` | Unidade | VL (limite inferior) | `{ decision: "Ignorado", justification: "1234567890" }` | status = "ignorado" | Alerta pendente existente |
+| TU74 | RN-17: Ignorado com justificação = 250 chars aceite | `PATCH /alerts/:id` | Unidade | VL (valor nominal) | `{ decision: "Ignorado", justification: "a"×250 }` | status = "ignorado" | Alerta pendente existente |
+| TU75 | RN-17: Ignorado com justificação = 500 chars aceite | `PATCH /alerts/:id` | Unidade | VL (limite superior) | `{ decision: "Ignorado", justification: "a"×500 }` | status = "ignorado" | Alerta pendente existente |
+| TU76 | RN-17: Ignorado com justificação = 501 chars rejeitado | `PATCH /alerts/:id` | Unidade | VL (acima limite superior) | `{ decision: "Ignorado", justification: "a"×501 }` | Erro: "Justificação não pode exceder 500 caracteres" | Alerta pendente existente |
+| TU77 | RN-17: Ignorado sem justificação rejeitado | `PATCH /alerts/:id` | Unidade | PE (classe inválida) | `{ decision: "Ignorado", justification: null }` | Erro: "Justificação obrigatória" | Alerta pendente existente |
+| TU78 | RN-17: decisão inválida rejeitada | `PATCH /alerts/:id` | Unidade | PE (classe inválida) | `{ decision: "Cancelado", ... }` | Erro: "Decisão inválida" | Alerta pendente existente |
+
+### Lotes (/batches)
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | Input | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|-------|--------------------|---------------|
+| TU94 | RN-18: lote criado com dados válidos | `POST /batches` | Unidade | PE (classe válida) | `{ herbId: 1, planId: 1 }` | Lote criado com state = "ativo" | Nenhuma |
+| TU95 | RN-18: sem erva rejeitado | `POST /batches` | Unidade | PE (classe inválida) | `{ herbId: null, planId: 1 }` | Erro: "Erva inválida" | Nenhuma |
+| TU96 | RN-18: sem plano rejeitado | `POST /batches` | Unidade | PE (classe inválida) | `{ herbId: 1, planId: null }` | Erro: "Plano inválido" | Nenhuma |
+| TU97 | RN-19: ativo → concluido permitido | `PATCH /batches/:id` | Unidade | CM (transição válida) | `{ state: "concluido" }` | state = "concluido" | Lote ativo |
+| TU98 | RN-19: ativo → comprometido permitido | `PATCH /batches/:id` | Unidade | CM (transição válida) | `{ state: "comprometido" }` | state = "comprometido" | Lote ativo |
+| TU99 | RN-19: concluido → ativo não permitido | `PATCH /batches/:id` | Unidade | CM (transição inválida) | `{ state: "ativo" }` | Erro: "Transição" | Lote concluído |
+| TU100 | RN-19: comprometido → concluido permitido | `PATCH /batches/:id` | Unidade | CM (transição válida) | `{ state: "concluido" }` | state = "concluido" | Lote comprometido |
+| TU101 | RN-19: estado inválido rejeitado | `PATCH /batches/:id` | Unidade | PE (classe inválida) | `{ state: "pausado" }` | Erro: "Estado inválido" | Lote ativo |
+| TU102 | RN-20: perda = -1 (abaixo do limite) | `POST /batches/:id/loss` | Unidade | VL (abaixo limite inferior) | `{ loss: -1 }` | Erro: "Perda não pode ser negativa" | Lote ativo |
+| TU103 | RN-20: perda = 0 (limite inferior) | `POST /batches/:id/loss` | Unidade | VL (limite inferior) | `{ loss: 0 }` | losses = 0 | Lote ativo |
+| TU104 | RN-20: perda = 50 (valor nominal) | `POST /batches/:id/loss` | Unidade | VL (valor nominal) | `{ loss: 50 }` | losses = 50 | Lote ativo |
+| TU105 | RN-20: perda = 100 (limite superior) | `POST /batches/:id/loss` | Unidade | VL (limite superior) | `{ loss: 100 }` | losses = 100 | Lote ativo |
+| TU106 | RN-20: perda = 101 (acima do limite) | `POST /batches/:id/loss` | Unidade | VL (acima limite superior) | `{ loss: 101 }` | Erro: "Perda não pode exceder 100%" | Lote ativo |
+| TU107 | RN-20: perda > 50% muda estado para comprometido | `POST /batches/:id/loss` | Unidade | PE (classe válida) | `{ loss: 51 }` | state = "comprometido" | Lote ativo |
+| TU108 | RN-21: lote sem perdas tem produtividade 100% | `GET /batches/:id` | Unidade | PE (classe válida) | lote concluído sem perdas | productivity = 100 | Lote concluído |
+| TU109 | RN-21: lote com 30% perdas tem produtividade 70% | `GET /batches/:id` | Unidade | PE (classe válida) | lote concluído com losses = 30 | productivity = 70 | Lote concluído |
+| TU110 | RN-21: lote não concluído lança erro | `GET /batches/:id` | Unidade | PE (classe inválida) | lote ativo | Erro: "Lote ainda não foi concluído" | Lote ativo |
+
+### Automação (/automation)
+
+#### Motor de Automação — Condições Múltiplas
+
+**Expressão lógica:** `executeRule(rule, measurement)` com C1=modo e C2=condição satisfeita
+
+**Condições atómicas:**
+- C1: `mode === 'Automatico'`
+- C2: `measurement >= threshold` (condição satisfeita)
+
+| Linha | C1 (Automatico) | C2 (condição satisfeita) | C1 && C2 | Resultado | Caso de Teste |
+|-------|----------------|--------------------------|----------|-----------|---------------|
+| 1 | F | F | F | Não executa, não sugere | TU118 |
+| 2 | F | T | F | Não executa, sugere | TU119 |
+| 3 | T | F | F | Não executa | TU120 |
+| 4 | T | T | T | Executa | TU121 |
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | Input | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|-------|--------------------|---------------|
+| TU111 | RN-22: modo Manual válido | `POST /automation/mode` | Unidade | PE (classe válida) | `{ mode: "Manual" }` | mode = "Manual" | Nenhuma |
+| TU112 | RN-22: modo Automatico válido | `POST /automation/mode` | Unidade | PE (classe válida) | `{ mode: "Automatico" }` | mode = "Automatico" | Nenhuma |
+| TU113 | RN-22: modo inválido rejeitado | `POST /automation/mode` | Unidade | PE (classe inválida) | `{ mode: "Semiautomatico" }` | Erro: "Modo inválido" | Nenhuma |
+| TU114 | RN-23: regra válida criada | `POST /automation/rules` | Unidade | PE (classe válida) | `{ action: "rega", condition: "humidity < threshold", threshold: 40 }` | Regra criada com active = true | Nenhuma |
+| TU115 | RN-23: ação inválida rejeitada | `POST /automation/rules` | Unidade | PE (classe inválida) | `{ action: "voar", ... }` | Erro: "Ação inválida" | Nenhuma |
+| TU116 | RN-23: condição vazia rejeitada | `POST /automation/rules` | Unidade | PE (classe inválida) | `{ condition: "", ... }` | Erro: "Condição inválida" | Nenhuma |
+| TU117 | RN-23: threshold NaN rejeitado | `POST /automation/rules` | Unidade | PE (classe inválida) | `{ threshold: NaN, ... }` | Erro: "Threshold inválido" | Nenhuma |
+| TU118 | RN-24: Manual + cond. não satisfeita → não executa | `POST /automation/execute` | Unidade | CM (linha 1) | modo Manual, measurement = 30 | executed=false, suggested=false | Regra ativa |
+| TU119 | RN-24: Manual + cond. satisfeita → sugere | `POST /automation/execute` | Unidade | CM (linha 2) | modo Manual, measurement = 40 | executed=false, suggested=true | Regra ativa |
+| TU120 | RN-24: Automatico + cond. não satisfeita → não executa | `POST /automation/execute` | Unidade | CM (linha 3) | modo Automatico, measurement = 30 | executed=false | Regra ativa |
+| TU121 | RN-24: Automatico + cond. satisfeita → executa | `POST /automation/execute` | Unidade | CM (linha 4) | modo Automatico, measurement = 40 | executed=true | Regra ativa |
+| TU122 | RN-24: regra inativa não executa | `POST /automation/execute` | Unidade | PE (classe inválida) | regra com active=false | executed=false | Regra inativa |
+
+### Classes de Equivalência — Sprint 3
+
+| Parâmetro | Classe Válida | Classe Inválida |
+|-----------|--------------|-----------------|
+| temperature (medição) | Número no intervalo [-50, 100] | NaN, < -50 ou > 100 |
+| humidity (medição) | Número válido | NaN ou null |
+| luminosity (medição) | Número válido | NaN ou null |
+| classification (alerta) | "Informativo", "Aviso", "Critico" | Qualquer outro valor |
+| decision (alerta) | "Resolvido", "Ignorado" | Qualquer outro valor |
+| justification (Ignorado) | String [10, 500] chars | null, < 10 chars ou > 500 chars |
+| herbId (lote) | Número válido | null |
+| planId (lote) | Número válido | null |
+| state (lote) | "ativo", "concluido", "comprometido" | Qualquer outro valor |
+| loss (lote) | [0, 100] | < 0 ou > 100 |
+| mode (automação) | "Manual", "Automatico" | Qualquer outro valor |
+| action (regra) | Valor válido (e.g. "rega") | Valor desconhecido |
+| threshold (regra) | Número válido | NaN |
+
+### Valores Limite — Sprint 3
+
+| Parâmetro | Intervalo | Abaixo | Limite Inf. | Nominal | Limite Sup. | Acima |
+|-----------|-----------|--------|-------------|---------|-------------|-------|
+| temperature (ºC) | [-50, 100] | -51 | -50 | 23 | 100 | 101 |
+| justification (chars) | [10, 500] | 9 | 10 | 250 | 500 | 501 |
+| loss (%) | [0, 100] | -1 | 0 | 50 | 100 | 101 |
+
+### Cobertura — Sprint 3
+
+| Ficheiro | Instruções | Ramos | Funções | Linhas |
+|----------|-----------|-------|---------|--------|
+| authService.js | 97.82% | 96.42% | 100% | 97.67% |
+| herbsService.js | 93.54% | 96.77% | 75% | 96.66% |
+| plansService.js | 100% | 100% | 100% | 100% |
+| alertsServices.js | 93.02% | 92.10% | 100% | 100% |
+| automationService.js | 96.66% | 95.65% | 75% | 100% |
+| batchesService.js | 93.87% | 87.50% | 100% | 100% |
+| measurementsService.js | 93.10% | 94.87% | 100% | 92.85% |
+| **Total (services)** | **95.14%** | **94.76%** | **92.59%** | **98.17%** |
+| **Testes passados** | **122/122** | | | |
+
+---
+
 ## Tabela Inversa — Requisito → Casos de Teste
 
 | Requisito | Descrição | Casos de Teste |
@@ -174,3 +332,15 @@
 | RN-10 | Humidade do plano | TU39, TU40, TU41, TU42, TU43 |
 | RN-11 | Luminosidade do plano | TU44, TU45, TU46, TU47, TU48 |
 | RN-12 | Duração do ciclo do plano | TU49, TU50, TU51, TU52, TU53 |
+| RN-13 | Criação e validação de medições | TU79, TU80, TU81, TU82, TU83, TU89, TU90, TU91, TU92, TU93 |
+| RN-14 | Intervalo de temperatura das medições | TU84, TU85, TU86, TU87, TU88 |
+| RN-15 | Classificação de alertas por violações | TU58, TU59, TU60, TU61, TU62, TU63, TU64, TU65 |
+| RN-16 | Criação de alertas com classificação válida | TU66, TU67, TU68, TU69, TU70 |
+| RN-17 | Resolução de alertas com decisão e justificação | TU71, TU72, TU73, TU74, TU75, TU76, TU77, TU78 |
+| RN-18 | Criação de lotes | TU94, TU95, TU96 |
+| RN-19 | Transições de estado do lote | TU97, TU98, TU99, TU100, TU101 |
+| RN-20 | Registo de perdas no lote | TU102, TU103, TU104, TU105, TU106, TU107 |
+| RN-21 | Cálculo de produtividade do lote | TU108, TU109, TU110 |
+| RN-22 | Modo de automação | TU111, TU112, TU113 |
+| RN-23 | Criação de regras de automação | TU114, TU115, TU116, TU117 |
+| RN-24 | Execução do motor de automação | TU118, TU119, TU120, TU121, TU122 |
