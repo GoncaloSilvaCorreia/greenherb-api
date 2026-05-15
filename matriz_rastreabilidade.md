@@ -52,7 +52,7 @@
 | TU15 | RN-05: criação de erva com dados válidos | `POST /herbs` | Unidade | PE (classe válida) | `{ name: "Hortelã", scientificName: "Mentha spicata", cycledays: 90, minTemp: 15, maxTemp: 25, minHumidity: 50, maxHumidity: 70, minLuminosity: 5000, maxLuminosity: 20000 }` | Erva criada com id definido | Nenhuma |
 | TU16 | RN-05: nome vazio rejeitado | `POST /herbs` | Unidade | PE (classe inválida) | `{ name: "", ... }` | Erro: "Nome inválido" | Nenhuma |
 | TU17 | RN-05: nome científico vazio rejeitado | `POST /herbs` | Unidade | PE (classe inválida) | `{ scientificName: "", ... }` | Erro: "Nome científico inválido" | Nenhuma |
-| TU18 | RN-05: temperatura mínima > máxima rejeitada | `POST /herbs` | Unidade | PE (classe inválida) | `{ minTemp: 30, maxTemp: 25, ... }` | Erro: "Temperatura inválida" | Nenhuma |
+| TU18 | RN-05: temp. mínima > máxima rejeitada | `POST /herbs` | Unidade | PE (classe inválida) | `{ minTemp: 30, maxTemp: 25, ... }` | Erro: "Temperatura inválida" | Nenhuma |
 | TU19 | RN-05: humidade mínima > máxima rejeitada | `POST /herbs` | Unidade | PE (classe inválida) | `{ minHumidity: 80, maxHumidity: 50, ... }` | Erro: "Humidade inválida" | Nenhuma |
 | TU20 | RN-06: cycledays = 0 (abaixo do limite) | `POST /herbs` | Unidade | VL (abaixo limite inferior) | `{ cycledays: 0, ... }` | Erro: "Duração do ciclo inválida" | Nenhuma |
 | TU21 | RN-06: cycledays = 1 (limite inferior) | `POST /herbs` | Unidade | VL (limite inferior) | `{ cycledays: 1, ... }` | Erva criada com cycledays = 1 | Nenhuma |
@@ -94,6 +94,37 @@
 | TU52 | RN-12: cycleDays = 365 (limite superior) | `POST /plans` | Unidade | VL (limite superior) | `{ cycleDays: 365, ... }` | Plano criado com cycleDays = 365 | Nenhuma |
 | TU53 | RN-12: cycleDays = 366 (acima do limite) | `POST /plans` | Unidade | VL (acima limite superior) | `{ cycleDays: 366, ... }` | Erro: "Duração do ciclo inválida" | Nenhuma |
 
+### Cobertura de Condições Múltiplas — Sprint 2
+
+#### Decisão: Validação do plano pontual
+**Expressão lógica:** `if (type === 'pontual' && !authorizedBy)`
+
+**Condições atómicas:**
+- C1: `type === 'pontual'`
+- C2: `!authorizedBy` (sem autorização)
+
+**Tabela de verdade completa (2² = 4 linhas):**
+
+| Linha | C1 (é pontual) | C2 (sem autorização) | C1 && C2 | Resultado | Caso de Teste |
+|-------|---------------|---------------------|----------|-----------|---------------|
+| 1 | F | F | F | Aceita | TU54 |
+| 2 | F | T | F | Aceita | TU55 |
+| 3 | T | F | F | Aceita | TU56 |
+| 4 | T | T | T | Rejeita | TU57 |
+
+**Justificação MC/DC:**
+- C1 afeta o resultado isoladamente: linha 3 (T,F)=aceita vs linha 4 (T,T)=rejeita
+- C2 afeta o resultado isoladamente: linha 2 (F,T)=aceita vs linha 4 (T,T)=rejeita
+
+**Subconjunto mínimo MC/DC:** TU55, TU56, TU57
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | Input | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|-------|--------------------|---------------|
+| TU54 | RN-08: C1=F, C2=F (regular + autorização) | `POST /plans` | Unidade | CM (linha 1) | `{ type: "regular", authorizedBy: "responsavel1", ... }` | Plano criado com sucesso | Nenhuma |
+| TU55 | RN-08: C1=F, C2=T (regular + sem autorização) | `POST /plans` | Unidade | CM (linha 2) | `{ type: "regular", authorizedBy: null, ... }` | Plano criado com sucesso | Nenhuma |
+| TU56 | RN-08: C1=T, C2=F (pontual + autorização) | `POST /plans` | Unidade | CM (linha 3) | `{ type: "pontual", authorizedBy: "responsavel1", ... }` | Plano criado com sucesso | Nenhuma |
+| TU57 | RN-08: C1=T, C2=T (pontual + sem autorização) | `POST /plans` | Unidade | CM (linha 4) | `{ type: "pontual", authorizedBy: null, ... }` | Erro: "Plano pontual requer autorização" | Nenhuma |
+
 ### Classes de Equivalência — Sprint 2
 
 | Parâmetro | Classe Válida | Classe Inválida |
@@ -122,24 +153,24 @@
 | authService.js | 97.82% | 96.42% | 100% | 97.67% |
 | herbsService.js | 93.54% | 96.77% | 75% | 96.66% |
 | plansService.js | 100% | 100% | 100% | 100% |
-| **Total** | **96.87%** | **97.67%** | **90.9%** | **97.82%** |
-| **Testes passados** | **53/53** | | | |
+| **Total (services)** | **96.87%** | **97.67%** | **90.9%** | **97.82%** |
+| **Testes passados** | **57/57** | | | |
 
 ---
 
 ## Tabela Inversa — Requisito → Casos de Teste
 
-| Requisito | Casos de Teste |
-|-----------|---------------|
-| RN-01: perfis válidos de registo | TU01, TU02, TU03, TU04 |
-| RN-02: validação de username e password | TU05, TU06, TU07 |
-| RN-03: autenticação por credenciais | TU08, TU09, TU10, TU11, TU12 |
-| RN-04: renovação de token | TU13, TU14 |
-| RN-05: criação de erva aromática | TU15, TU16, TU17, TU18, TU19 |
-| RN-06: duração do ciclo de erva | TU20, TU21, TU22, TU23, TU24 |
-| RN-07: importação CSV de ervas | TU25, TU26, TU27, TU28 |
-| RN-08: tipo de plano de cultivo | TU29, TU30, TU31, TU32, TU33 |
-| RN-09: temperatura do plano | TU34, TU35, TU36, TU37, TU38 |
-| RN-10: humidade do plano | TU39, TU40, TU41, TU42, TU43 |
-| RN-11: luminosidade do plano | TU44, TU45, TU46, TU47, TU48 |
-| RN-12: duração do ciclo do plano | TU49, TU50, TU51, TU52, TU53 |
+| Requisito | Descrição | Casos de Teste |
+|-----------|-----------|---------------|
+| RN-01 | Perfis válidos de registo | TU01, TU02, TU03, TU04 |
+| RN-02 | Validação de username e password | TU05, TU06, TU07 |
+| RN-03 | Autenticação por credenciais | TU08, TU09, TU10, TU11, TU12 |
+| RN-04 | Renovação de token | TU13, TU14 |
+| RN-05 | Criação de erva aromática | TU15, TU16, TU17, TU18, TU19 |
+| RN-06 | Duração do ciclo de erva | TU20, TU21, TU22, TU23, TU24 |
+| RN-07 | Importação CSV de ervas | TU25, TU26, TU27, TU28 |
+| RN-08 | Tipo de plano e autorização pontual | TU29, TU30, TU31, TU32, TU33, TU54, TU55, TU56, TU57 |
+| RN-09 | Temperatura do plano | TU34, TU35, TU36, TU37, TU38 |
+| RN-10 | Humidade do plano | TU39, TU40, TU41, TU42, TU43 |
+| RN-11 | Luminosidade do plano | TU44, TU45, TU46, TU47, TU48 |
+| RN-12 | Duração do ciclo do plano | TU49, TU50, TU51, TU52, TU53 |
