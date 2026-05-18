@@ -1,10 +1,10 @@
 const herbs = [];
 
 const createHerb = (name, scientificName, cycledays, minTemp, maxTemp, minHumidity, maxHumidity, minLuminosity, maxLuminosity) => {
-    if (!name || name.trim() === '') {
+    if (name === null || name === undefined || name.toString().trim() === '') {
         throw new Error('Nome inválido');
     }
-    if (!scientificName || scientificName.trim() === '') {
+    if (scientificName === null || scientificName === undefined || scientificName.toString().trim() === '') {
         throw new Error('Nome científico inválido');
     }
     if (cycledays < 1 || cycledays > 365) {
@@ -35,9 +35,12 @@ const createHerb = (name, scientificName, cycledays, minTemp, maxTemp, minHumidi
     return herb;
 };
 
-const importHerbs = (rows) => {
+const importHerbs = (rows, userRole) => {
     if (!rows || rows.length === 0) {
         throw new Error('Ficheiro vazio');
+    }
+    if (userRole !== 'Administrador') {
+        throw new Error('Apenas o Administrador pode importar ervas');
     }
     const results = { success: 0, failed: 0, errors: [] };
     rows.forEach((row, index) => {
