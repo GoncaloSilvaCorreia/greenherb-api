@@ -334,3 +334,78 @@
 | RN-22 | Criação de regras de automação | TU114, TU115, TU116, TU117 |
 | RN-23 | Motor de automação | TU118, TU119, TU120, TU121, TU122 |
 | RN-24 | Validação de campos nulos/vazios em ervas | TU123, TU124, TU125, TU126, TU127, TU128 |
+
+---
+
+## Sprint 4 — Testes de Integração
+
+### Autenticação (/auth)
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | Input | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|-------|--------------------|---------------|
+| TI01a | RN-01: registo válido Tecnico | `POST /auth/register` | Integração | PE (classe válida) | `{ username: "tecnico1", password: "123456", role: "Tecnico" }` | 201 - `{ username: "tecnico1", role: "Tecnico" }` | Servidor a correr |
+| TI01b | RN-01: registo válido Responsavel | `POST /auth/register` | Integração | PE (classe válida) | `{ username: "responsavel1", password: "123456", role: "Responsavel" }` | 201 | Servidor a correr |
+| TI01c | RN-01: registo válido Administrador | `POST /auth/register` | Integração | PE (classe válida) | `{ username: "admin1", password: "123456", role: "Administrador" }` | 201 | Servidor a correr |
+| TI01d | RN-01: perfil inválido | `POST /auth/register` | Integração | PE (classe inválida) | `{ username: "hacker", password: "123456", role: "Hacker" }` | 400 - `{ error: "..." }` | Servidor a correr |
+| TI01e | RN-02: username duplicado | `POST /auth/register` | Integração | PE (classe inválida) | `{ username: "duplicado", password: "123456", role: "Tecnico" }` | 400 | Utilizador já registado |
+| TI01f | RN-02: body vazio | `POST /auth/register` | Integração | PE (classe inválida) | `{}` | 400 | Servidor a correr |
+| TI01g | RN-02: sem Content-Type | `POST /auth/register` | Integração | PE (classe inválida) | form-urlencoded | 400 | Servidor a correr |
+| TI01h | RN-02: método GET não permitido | `GET /auth/register` | Integração | PE (classe inválida) | — | 404 | Servidor a correr |
+| TI02a | RN-03: login válido devolve tokens | `POST /auth/login` | Integração | PE (classe válida) | `{ username: "loginuser", password: "123456" }` | 200 - `{ token: "...", refreshToken: "..." }` | Utilizador registado |
+| TI02b | RN-03: password errada | `POST /auth/login` | Integração | PE (classe inválida) | `{ username: "loginuser", password: "errada" }` | 401 | Utilizador registado |
+| TI02c | RN-03: username inexistente | `POST /auth/login` | Integração | PE (classe inválida) | `{ username: "naoexiste", password: "123456" }` | 401 | Servidor a correr |
+| TI02d | RN-03: body vazio | `POST /auth/login` | Integração | PE (classe inválida) | `{}` | 400 | Servidor a correr |
+| TI02e | RN-03: username vazio | `POST /auth/login` | Integração | PE (classe inválida) | `{ username: "", password: "123456" }` | 400 | Servidor a correr |
+| TI03a | RN-04: refresh token válido | `POST /auth/refresh` | Integração | PE (classe válida) | `{ refreshToken: "<token válido>" }` | 200 - `{ token: "..." }` | Utilizador logado |
+| TI03b | RN-04: refresh token inválido | `POST /auth/refresh` | Integração | PE (classe inválida) | `{ refreshToken: "token_invalido" }` | 401 | Servidor a correr |
+| TI03c | RN-04: sem refresh token | `POST /auth/refresh` | Integração | PE (classe inválida) | `{}` | 400 | Servidor a correr |
+
+### Ervas Aromáticas (/herbs)
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | Input | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|-------|--------------------|---------------|
+| TI04a | RN-05: criação válida | `POST /herbs` | Integração | PE (classe válida) | `{ name: "Hortelã", scientificName: "Mentha spicata", cycledays: 90, ... }` | 201 - `{ id: ..., name: "Hortelã" }` | Servidor a correr |
+| TI04b | RN-05: nome vazio | `POST /herbs` | Integração | PE (classe inválida) | `{ name: "", ... }` | 400 - `{ error: "..." }` | Servidor a correr |
+| TI04c | RN-06: cycledays = 0 | `POST /herbs` | Integração | VL (abaixo limite) | `{ cycledays: 0, ... }` | 400 | Servidor a correr |
+| TI04d | RN-05: body vazio | `POST /herbs` | Integração | PE (classe inválida) | `{}` | 400 | Servidor a correr |
+| TI04e | RN-05: GET devolve lista | `GET /herbs` | Integração | PE (classe válida) | — | 200 - Array | Servidor a correr |
+| TI05a | RN-07: importação válida por Administrador | `POST /herbs/import` | Integração | PE (classe válida) | `{ rows: [...], userRole: "Administrador" }` | 200 - `{ success: 1, failed: 0 }` | Servidor a correr |
+| TI05b | RN-07: importação por Tecnico | `POST /herbs/import` | Integração | PE (classe inválida) | `{ rows: [...], userRole: "Tecnico" }` | 400 | Servidor a correr |
+| TI05c | RN-07: ficheiro vazio | `POST /herbs/import` | Integração | PE (classe inválida) | `{ rows: [], userRole: "Administrador" }` | 400 | Servidor a correr |
+| TI05d | RN-07: linhas mistas | `POST /herbs/import` | Integração | PE (classe mista) | 1 válida + 1 inválida | 200 - `{ success: 1, failed: 1 }` | Servidor a correr |
+
+### Planos de Cultivo (/plans)
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | Input | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|-------|--------------------|---------------|
+| TI06a | RN-08: plano regular válido | `POST /plans` | Integração | PE (classe válida) | `{ type: "regular", ... }` | 201 - `{ type: "regular" }` | Servidor a correr |
+| TI06b | RN-08: plano emergencia válido | `POST /plans` | Integração | PE (classe válida) | `{ type: "emergencia", ... }` | 201 | Servidor a correr |
+| TI06c | RN-08: pontual com autorização | `POST /plans` | Integração | PE (classe válida) | `{ type: "pontual", authorizedBy: "responsavel1", ... }` | 201 - `{ authorizedBy: "responsavel1" }` | Servidor a correr |
+| TI06d | RN-08: pontual sem autorização | `POST /plans` | Integração | PE (classe inválida) | `{ type: "pontual", authorizedBy: null, ... }` | 400 - `{ error: "..." }` | Servidor a correr |
+| TI06e | RN-08: tipo inválido | `POST /plans` | Integração | PE (classe inválida) | `{ type: "invalido", ... }` | 400 | Servidor a correr |
+| TI06f | RN-09: temperatura fora dos limites | `POST /plans` | Integração | VL (abaixo limite) | `{ minTemp: 17, ... }` | 400 | Servidor a correr |
+| TI06g | RN-10: humidade fora dos limites | `POST /plans` | Integração | VL (abaixo limite) | `{ minHumidity: 39, ... }` | 400 | Servidor a correr |
+| TI06h | RN-08: body vazio | `POST /plans` | Integração | PE (classe inválida) | `{}` | 400 | Servidor a correr |
+| TI06i | RN-08: GET devolve lista | `GET /plans` | Integração | PE (classe válida) | — | 200 - Array | Servidor a correr |
+
+### Cobertura — Sprint 4
+
+| Ficheiro | Instruções | Ramos | Funções | Linhas |
+|----------|-----------|-------|---------|--------|
+| authController.js | 100% | 100% | 100% | 100% |
+| authRoutes.js | 100% | 100% | 100% | 100% |
+| herbsRoutes.js | 100% | 100% | 100% | 100% |
+| plansRoutes.js | 100% | 100% | 100% | 100% |
+| **Total geral** | **85.79%** | **91.48%** | **79.06%** | **86.68%** |
+| **Testes passados** | **172/172** | | | |
+
+### Tabela Inversa — Sprint 4 (novos requisitos)
+
+| Requisito | Descrição | Casos de Teste |
+|-----------|-----------|---------------|
+| RN-01 (integração) | Registo de utilizadores | TI01a, TI01b, TI01c, TI01d, TI01e, TI01f, TI01g, TI01h |
+| RN-03 (integração) | Login de utilizadores | TI02a, TI02b, TI02c, TI02d, TI02e |
+| RN-04 (integração) | Refresh token | TI03a, TI03b, TI03c |
+| RN-05 (integração) | Criação de ervas | TI04a, TI04b, TI04c, TI04d, TI04e |
+| RN-07 (integração) | Importação CSV | TI05a, TI05b, TI05c, TI05d |
+| RN-08 (integração) | Planos de cultivo | TI06a, TI06b, TI06c, TI06d, TI06e, TI06f, TI06g, TI06h, TI06i |
