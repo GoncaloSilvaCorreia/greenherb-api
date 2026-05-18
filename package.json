@@ -10,24 +10,17 @@
   },
   "jest": {
     "testEnvironment": "node",
+    "testPathPatterns": ["tests/"],
     "reporters": [
       "default",
-      [
-        "jest-html-reporter",
-        {
-          "pageTitle": "GREENHERB - Relatório de Testes",
-          "outputPath": "test-report/index.html",
-          "includeFailureMsg": true,
-          "includeSuiteFailure": true,
-          "includeConsoleLog": true,
-          "theme": "darkTheme",
-          "sort": "titleAsc"
-        }
-      ]
+      ["jest-html-reporter", {
+        "pageTitle": "GREENHERB - Relatório de Testes",
+        "outputPath": "test-report/index.html",
+        "includeFailureMsg": true,
+        "theme": "darkTheme"
+      }]
     ],
-    "collectCoverageFrom": [
-      "src/**/*.js"
-    ]
+    "collectCoverageFrom": ["src/**/*.js"]
   },
   "keywords": [],
   "author": "",
