@@ -261,6 +261,27 @@
 | 3 | T | F | não executa | TU120 |
 | 4 | T | T | executa | TU121 |
 
+### Valores Nulos, Vazios e Controlo de Acesso CSV
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | Input | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|-------|--------------------|---------------|
+| TU123 | RN-07: nome null rejeitado | `POST /herbs` | Unidade | PE (classe inválida) | `{ name: null, ... }` | Erro: "Nome inválido" | Nenhuma |
+| TU124 | RN-07: nome undefined rejeitado | `POST /herbs` | Unidade | PE (classe inválida) | `{ name: undefined, ... }` | Erro: "Nome inválido" | Nenhuma |
+| TU125 | RN-07: nome com espaços rejeitado | `POST /herbs` | Unidade | PE (classe inválida) | `{ name: "   ", ... }` | Erro: "Nome inválido" | Nenhuma |
+| TU126 | RN-07: nome científico null | `POST /herbs` | Unidade | PE (classe inválida) | `{ scientificName: null, ... }` | Erro: "Nome científico inválido" | Nenhuma |
+| TU127 | RN-07: nome científico undefined | `POST /herbs` | Unidade | PE (classe inválida) | `{ scientificName: undefined, ... }` | Erro: "Nome científico inválido" | Nenhuma |
+| TU128 | RN-07: nome científico com espaços | `POST /herbs` | Unidade | PE (classe inválida) | `{ scientificName: "   ", ... }` | Erro: "Nome científico inválido" | Nenhuma |
+| TU129 | RN-07: Administrador pode importar | `POST /herbs/import` | Unidade | PE (classe válida) | `{ rows: [...], userRole: "Administrador" }` | `{ success: 1, failed: 0 }` | Nenhuma |
+| TU130 | RN-07: Tecnico não pode importar | `POST /herbs/import` | Unidade | PE (classe inválida) | `{ rows: [...], userRole: "Tecnico" }` | Erro: "Apenas o Administrador pode importar" | Nenhuma |
+| TU131 | RN-07: Responsavel não pode importar | `POST /herbs/import` | Unidade | PE (classe inválida) | `{ rows: [...], userRole: "Responsavel" }` | Erro: "Apenas o Administrador pode importar" | Nenhuma |
+| TU132 | RN-07: sem perfil não pode importar | `POST /herbs/import` | Unidade | PE (classe inválida) | `{ rows: [...], userRole: null }` | Erro: "Apenas o Administrador pode importar" | Nenhuma |
+| TU133 | RN-07: linha CSV com nome null | `POST /herbs/import` | Unidade | PE (classe inválida) | `{ name: null, ... }` | `{ failed: 1, errors[0]: "Nome inválido" }` | Perfil Administrador |
+| TU134 | RN-07: linha CSV com nome vazio | `POST /herbs/import` | Unidade | PE (classe inválida) | `{ name: "", ... }` | `{ failed: 1, errors[0]: "Nome inválido" }` | Perfil Administrador |
+| TU135 | RN-07: linha CSV com scientificName null | `POST /herbs/import` | Unidade | PE (classe inválida) | `{ scientificName: null, ... }` | `{ failed: 1, errors[0]: "Nome científico inválido" }` | Perfil Administrador |
+| TU136 | RN-07: linha CSV com cycledays null | `POST /herbs/import` | Unidade | PE (classe inválida) | `{ cycledays: null, ... }` | `{ failed: 1 }` | Perfil Administrador |
+| TU137 | RN-07: CSV misto (nulos + válidos) | `POST /herbs/import` | Unidade | PE (classe mista) | 1 linha null + 1 linha válida | `{ success: 1, failed: 1 }` | Perfil Administrador |
+| TU138 | RN-07: CSV com todas as linhas nulas | `POST /herbs/import` | Unidade | PE (classe inválida) | 1 linha com todos os campos null | `{ success: 0, failed: 1 }` | Perfil Administrador |
+
 ### Valores Limite — Sprint 3
 
 | Parâmetro | Intervalo | Abaixo | Limite Inf. | Nominal | Limite Sup. | Acima |
@@ -295,7 +316,7 @@
 | RN-04 | Renovação de token | TU13, TU14 |
 | RN-05 | Criação de erva aromática | TU15, TU16, TU17, TU18, TU19 |
 | RN-06 | Duração do ciclo de erva | TU20, TU21, TU22, TU23, TU24 |
-| RN-07 | Importação CSV de ervas | TU25, TU26, TU27, TU28 |
+| RN-07 | Importação CSV de ervas | TU25, TU26, TU27, TU28, TU129, TU130, TU131, TU132, TU133, TU134, TU135, TU136, TU137, TU138 |
 | RN-08 | Tipo de plano e autorização pontual | TU29, TU30, TU31, TU32, TU33, TU54, TU55, TU56, TU57 |
 | RN-09 | Temperatura do plano | TU34, TU35, TU36, TU37, TU38 |
 | RN-10 | Humidade do plano | TU39, TU40, TU41, TU42, TU43 |
@@ -312,3 +333,4 @@
 | RN-21 | Modo de automação | TU111, TU112, TU113 |
 | RN-22 | Criação de regras de automação | TU114, TU115, TU116, TU117 |
 | RN-23 | Motor de automação | TU118, TU119, TU120, TU121, TU122 |
+| RN-24 | Validação de campos nulos/vazios em ervas | TU123, TU124, TU125, TU126, TU127, TU128 |
