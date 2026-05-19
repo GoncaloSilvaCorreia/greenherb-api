@@ -8,34 +8,7 @@
     <style>
         *{box-sizing:border-box;margin:0;padding:0}
         body{font-family:system-ui,sans-serif;background:#f5f5f5;color:#1a1a1a}
-
-        /* ===== LOGIN PAGE ===== */
-        .login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f5}
-        .login-card{background:#fff;border:1px solid #e5e5e5;border-radius:16px;padding:2.5rem;width:380px}
-        .login-logo{text-align:center;margin-bottom:2rem}
-        .login-logo h1{font-size:22px;font-weight:500;margin-bottom:4px}
-        .login-logo span{font-size:13px;color:#888}
-        .login-logo .icon{font-size:40px;color:#166534;display:block;margin-bottom:0.75rem}
-        .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
-        .form-group label{font-size:12px;color:#666;font-weight:500}
-        .form-group input,.form-group select{font-size:14px;padding:10px 12px;border-radius:8px;border:1px solid #e5e5e5;outline:none;background:#fff;color:#1a1a1a;width:100%}
-        .form-group input:focus,.form-group select:focus{border-color:#1D4ED8;box-shadow:0 0 0 3px #EFF6FF}
-        .btn{padding:10px 16px;border-radius:8px;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid #e5e5e5;background:#fff;color:#1a1a1a;width:100%;transition:all 0.15s}
-        .btn-primary{background:#166534;color:#fff;border-color:#166534}
-        .btn-primary:hover{background:#14532d}
-        .btn-secondary{background:#fff;color:#1a1a1a;border-color:#e5e5e5}
-        .btn-secondary:hover{background:#f5f5f5}
-        .btn-danger{background:#FEF2F2;color:#991B1B;border-color:#FECACA}
-        .btn-danger:hover{background:#FEE2E2}
-        .btn-sm{padding:8px 14px;font-size:13px;width:auto}
-        .alert{padding:0.75rem 1rem;border-radius:8px;font-size:13px;display:none;align-items:center;gap:8px;margin-top:1rem}
-        .alert.success{background:#F0FDF4;color:#166534;border:1px solid #BBF7D0;display:flex}
-        .alert.error{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;display:flex}
-        .divider{height:1px;background:#e5e5e5;margin:1.5rem 0;position:relative;text-align:center}
-        .divider span{background:#fff;padding:0 0.75rem;font-size:12px;color:#888;position:relative;top:-9px}
-
-        /* ===== DASHBOARD ===== */
-        .dashboard{display:none;flex;height:100vh}
+        .app{display:flex;height:100vh}
         .sidebar{width:230px;background:#fff;border-right:1px solid #e5e5e5;display:flex;flex-direction:column;padding:1rem 0;flex-shrink:0}
         .logo{padding:0 1rem 1rem;border-bottom:1px solid #e5e5e5;margin-bottom:0.5rem}
         .logo h1{font-size:15px;font-weight:500;display:flex;align-items:center;gap:8px}
@@ -51,7 +24,21 @@
         .card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
         .card h3{font-size:14px;font-weight:500;margin-bottom:1rem}
         .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-        .url-badge{font-size:11px;font-family:monospace;background:#F5F5F5;padding:3px 8px;border-radius:6px;color:#666}
+        .form-group{display:flex;flex-direction:column;gap:6px}
+        .form-group label{font-size:12px;color:#666;font-weight:500}
+        .form-group input,.form-group select{font-size:13px;padding:8px 10px;border-radius:8px;border:1px solid #e5e5e5;outline:none;background:#fff;color:#1a1a1a}
+        .form-group input:focus,.form-group select:focus{border-color:#166534}
+        .btn{padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;border:1px solid #e5e5e5;background:#fff;color:#1a1a1a;transition:all 0.15s}
+        .btn-primary{background:#166534;color:#fff;border-color:#166534}
+        .btn-primary:hover{background:#14532d}
+        .btn-secondary{background:#fff;color:#1a1a1a;border-color:#e5e5e5}
+        .btn-secondary:hover{background:#f5f5f5}
+        .btn-danger{background:#FEF2F2;color:#991B1B;border-color:#FECACA}
+        .btn-danger:hover{background:#FEE2E2}
+        .btn-sm{padding:6px 12px;font-size:12px}
+        .alert{padding:0.75rem 1rem;border-radius:8px;font-size:13px;display:none;align-items:center;gap:8px;margin-top:0.75rem}
+        .alert.success{background:#F0FDF4;color:#166534;border:1px solid #BBF7D0;display:flex}
+        .alert.error{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;display:flex}
         .tab-bar{display:flex;gap:4px;margin-bottom:1rem;border-bottom:1px solid #e5e5e5}
         .tab{padding:8px 16px;font-size:13px;cursor:pointer;color:#666;border-bottom:2px solid transparent;margin-bottom:-1px}
         .tab.active{color:#166534;border-bottom-color:#166534}
@@ -59,22 +46,33 @@
         .tab-content.active{display:block}
         .list-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e5e5e5;font-size:13px}
         .list-item:last-child{border-bottom:none}
-        .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:12px;font-weight:500}
-        .badge-info{background:#EFF6FF;color:#1D4ED8}
-        .badge-success{background:#F0FDF4;color:#166534}
-        .badge-warning{background:#FFFBEB;color:#92400E}
-        .badge-danger{background:#FEF2F2;color:#991B1B}
+        .url-badge{font-size:11px;font-family:monospace;background:#F5F5F5;padding:3px 8px;border-radius:6px;color:#666}
         .sidebar-bottom{padding:1rem;border-top:1px solid #e5e5e5;margin-top:auto}
         .user-info{display:flex;align-items:center;gap:8px;margin-bottom:10px}
         .user-avatar{width:32px;height:32px;border-radius:50%;background:#F0FDF4;color:#166534;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;border:1px solid #BBF7D0}
         .user-details .name{font-size:13px;font-weight:500}
         .user-details .role{font-size:11px;color:#888}
-        .token-box{background:#F5F5F5;border-radius:8px;padding:0.75rem;font-size:12px;font-family:monospace;word-break:break-all;color:#666;margin-top:0.75rem}
+        .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;font-size:12px;font-weight:500}
+        .badge-info{background:#EFF6FF;color:#1D4ED8}
+        .badge-success{background:#F0FDF4;color:#166534}
+        .badge-warning{background:#FFFBEB;color:#92400E}
+        .badge-danger{background:#FEF2F2;color:#991B1B}
+        .badge-gray{background:#F5F5F5;color:#666}
+
+        /* LOGIN */
+        .login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f5}
+        .login-card{background:#fff;border:1px solid #e5e5e5;border-radius:16px;padding:2.5rem;width:380px}
+        .login-logo{text-align:center;margin-bottom:2rem}
+        .login-logo h1{font-size:22px;font-weight:500;margin-bottom:4px}
+        .login-logo span{font-size:13px;color:#888}
+        .login-logo .icon{font-size:40px;color:#166534;display:block;margin-bottom:0.75rem}
+        .divider{height:1px;background:#e5e5e5;margin:1.5rem 0;position:relative;text-align:center}
+        .divider span{background:#fff;padding:0 0.75rem;font-size:12px;color:#888;position:relative;top:-9px}
     </style>
 </head>
 <body>
 
-<!-- ===== LOGIN PAGE ===== -->
+<!-- LOGIN PAGE -->
 <div class="login-page" id="login-page">
     <div class="login-card">
         <div class="login-logo">
@@ -82,38 +80,33 @@
             <h1>GREENHERB</h1>
             <span>Plataforma de Gestão de Estufa</span>
         </div>
-
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:1rem">
             <label>Username</label>
             <input type="text" id="login-username" placeholder="Introduz o teu username" />
         </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:1rem">
             <label>Password</label>
             <input type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()" />
         </div>
-        <button class="btn btn-primary" onclick="doLogin()">
+        <button class="btn btn-primary" style="width:100%" onclick="doLogin()">
             <i class="ti ti-login"></i> Entrar
         </button>
         <div class="alert" id="login-alert"></div>
-
         <div class="divider"><span>ou</span></div>
-
-        <button class="btn btn-secondary" onclick="showRegister()">
+        <button class="btn btn-secondary" style="width:100%" onclick="toggleRegister()">
             <i class="ti ti-user-plus"></i> Criar conta
         </button>
-
-        <!-- REGISTO (escondido por defeito) -->
         <div id="register-section" style="display:none;margin-top:1.5rem">
             <div style="font-size:14px;font-weight:500;margin-bottom:1rem">Nova conta</div>
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom:1rem">
                 <label>Username</label>
                 <input type="text" id="reg-username" placeholder="Escolhe um username" />
             </div>
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom:1rem">
                 <label>Password</label>
                 <input type="password" id="reg-password" placeholder="••••••••" />
             </div>
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom:1rem">
                 <label>Perfil</label>
                 <select id="reg-role">
                     <option value="">Seleciona um perfil</option>
@@ -122,7 +115,7 @@
                     <option value="Administrador">Administrador</option>
                 </select>
             </div>
-            <button class="btn btn-primary" onclick="doRegister()">
+            <button class="btn btn-primary" style="width:100%" onclick="doRegister()">
                 <i class="ti ti-user-plus"></i> Registar
             </button>
             <div class="alert" id="register-alert"></div>
@@ -130,22 +123,20 @@
     </div>
 </div>
 
-<!-- ===== DASHBOARD ===== -->
-<div class="dashboard" id="dashboard">
+<!-- DASHBOARD -->
+<div class="app" id="dashboard" style="display:none">
     <div class="sidebar">
         <div class="logo">
             <h1><i class="ti ti-leaf" style="color:#166534"></i> GREENHERB</h1>
             <span>API Dashboard</span>
         </div>
-        <div class="nav-item active" onclick="showPage('herbs')" id="nav-herbs">
-            <i class="ti ti-plant"></i> Ervas
-        </div>
-        <div class="nav-item" onclick="showPage('plans')" id="nav-plans">
-            <i class="ti ti-clipboard-list"></i> Planos
-        </div>
-        <div class="nav-item" onclick="showPage('account')" id="nav-account">
-            <i class="ti ti-user"></i> Conta
-        </div>
+        <div class="nav-item active" onclick="showPage('herbs')" id="nav-herbs"><i class="ti ti-plant"></i> Ervas</div>
+        <div class="nav-item" onclick="showPage('plans')" id="nav-plans"><i class="ti ti-clipboard-list"></i> Planos</div>
+        <div class="nav-item" onclick="showPage('batches')" id="nav-batches"><i class="ti ti-box"></i> Lotes</div>
+        <div class="nav-item" onclick="showPage('measurements')" id="nav-measurements"><i class="ti ti-temperature"></i> Medições</div>
+        <div class="nav-item" onclick="showPage('alerts')" id="nav-alerts"><i class="ti ti-bell"></i> Alertas</div>
+        <div class="nav-item" onclick="showPage('automation')" id="nav-automation"><i class="ti ti-robot"></i> Automação</div>
+        <div class="nav-item" onclick="showPage('account')" id="nav-account"><i class="ti ti-user"></i> Conta</div>
         <div class="sidebar-bottom">
             <div class="user-info">
                 <div class="user-avatar" id="user-avatar"></div>
@@ -162,265 +153,379 @@
 
     <div class="main">
 
-        <!-- HERBS PAGE -->
+        <!-- HERBS -->
         <div class="page active" id="page-herbs">
             <div class="page-title">Ervas Aromáticas</div>
             <div class="tab-bar">
-                <div class="tab active" onclick="showTab('herbs','create',this)">Criar erva</div>
+                <div class="tab active" onclick="showTab('herbs','create',this)">Criar</div>
                 <div class="tab" onclick="showTab('herbs','import',this)">Importar CSV</div>
                 <div class="tab" onclick="showTab('herbs','list',this)">Listar</div>
             </div>
-
             <div class="tab-content active" id="herbs-create">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-                        <h3 style="margin:0">Nova erva aromática</h3>
-                        <span class="url-badge">POST /herbs</span>
+                        <h3 style="margin:0">Nova erva aromática</h3><span class="url-badge">POST /herbs</span>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Nome</label>
-                            <input type="text" id="herb-name" placeholder="ex: Hortelã" />
-                        </div>
-                        <div class="form-group">
-                            <label>Nome científico</label>
-                            <input type="text" id="herb-sci" placeholder="ex: Mentha spicata" />
-                        </div>
+                        <div class="form-group"><label>Nome</label><input type="text" id="herb-name" placeholder="ex: Hortelã" /></div>
+                        <div class="form-group"><label>Nome científico</label><input type="text" id="herb-sci" placeholder="ex: Mentha spicata" /></div>
                     </div>
-                    <div class="form-group" style="margin-bottom:12px">
-                        <label>Duração do ciclo (dias) [1-365]</label>
-                        <input type="number" id="herb-cycle" placeholder="ex: 90" min="1" max="365" />
+                    <div class="form-group" style="margin-bottom:12px"><label>Duração do ciclo (dias) [1-365]</label><input type="number" id="herb-cycle" placeholder="ex: 90" /></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Temp. mín. (ºC)</label><input type="number" id="herb-mintemp" placeholder="ex: 15" /></div>
+                        <div class="form-group"><label>Temp. máx. (ºC)</label><input type="number" id="herb-maxtemp" placeholder="ex: 25" /></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Temp. mínima (ºC)</label>
-                            <input type="number" id="herb-mintemp" placeholder="ex: 15" />
-                        </div>
-                        <div class="form-group">
-                            <label>Temp. máxima (ºC)</label>
-                            <input type="number" id="herb-maxtemp" placeholder="ex: 25" />
-                        </div>
+                        <div class="form-group"><label>Humidade mín. (%)</label><input type="number" id="herb-minhum" placeholder="ex: 50" /></div>
+                        <div class="form-group"><label>Humidade máx. (%)</label><input type="number" id="herb-maxhum" placeholder="ex: 70" /></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Humidade mínima (%)</label>
-                            <input type="number" id="herb-minhum" placeholder="ex: 50" />
-                        </div>
-                        <div class="form-group">
-                            <label>Humidade máxima (%)</label>
-                            <input type="number" id="herb-maxhum" placeholder="ex: 70" />
-                        </div>
+                        <div class="form-group"><label>Luminosidade mín. (lux)</label><input type="number" id="herb-minlux" placeholder="ex: 5000" /></div>
+                        <div class="form-group"><label>Luminosidade máx. (lux)</label><input type="number" id="herb-maxlux" placeholder="ex: 20000" /></div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Luminosidade mínima (lux)</label>
-                            <input type="number" id="herb-minlux" placeholder="ex: 5000" />
-                        </div>
-                        <div class="form-group">
-                            <label>Luminosidade máxima (lux)</label>
-                            <input type="number" id="herb-maxlux" placeholder="ex: 20000" />
-                        </div>
-                    </div>
-                    <button class="btn btn-primary btn-sm" onclick="doCreateHerb()">
-                        <i class="ti ti-plus"></i> Criar erva
-                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="doCreateHerb()"><i class="ti ti-plus"></i> Criar erva</button>
                     <div class="alert" id="herb-create-alert"></div>
                 </div>
             </div>
-
             <div class="tab-content" id="herbs-import">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-                        <h3 style="margin:0">Importar ervas via CSV</h3>
-                        <span class="url-badge">POST /herbs/import</span>
+                        <h3 style="margin:0">Importar via CSV</h3><span class="url-badge">POST /herbs/import</span>
                     </div>
-                    <p style="font-size:13px;color:#666;margin-bottom:1rem">Simula a importação de um ficheiro CSV com ervas aromáticas.</p>
                     <div class="form-group" style="margin-bottom:1rem">
-                        <label>Seleciona o cenário de teste</label>
+                        <label>Cenário de teste</label>
                         <select id="import-scenario">
-                            <option value="valid">Todas as linhas válidas (2 ervas)</option>
-                            <option value="mixed">Linhas mistas (1 válida + 1 inválida)</option>
-                            <option value="invalid">Todas inválidas (nome vazio)</option>
+                            <option value="valid">Todas válidas (2 ervas)</option>
+                            <option value="mixed">Mistas (1 válida + 1 inválida)</option>
+                            <option value="invalid">Todas inválidas</option>
                             <option value="empty">Ficheiro vazio</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="doImport()">
-                        <i class="ti ti-upload"></i> Importar
-                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="doImport()"><i class="ti ti-upload"></i> Importar</button>
                     <div class="alert" id="import-alert"></div>
                 </div>
             </div>
-
             <div class="tab-content" id="herbs-list">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-                        <h3 style="margin:0">Ervas registadas</h3>
-                        <span class="url-badge">GET /herbs</span>
+                        <h3 style="margin:0">Ervas registadas</h3><span class="url-badge">GET /herbs</span>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="listHerbs()" style="margin-bottom:1rem">
-                        <i class="ti ti-refresh"></i> Atualizar
-                    </button>
-                    <div id="herbs-list-content">
-                        <p style="font-size:13px;color:#666">Clica em "Atualizar" para ver as ervas.</p>
-                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="listHerbs()" style="margin-bottom:1rem"><i class="ti ti-refresh"></i> Atualizar</button>
+                    <div id="herbs-list-content"><p style="font-size:13px;color:#666">Clica em "Atualizar".</p></div>
                 </div>
             </div>
         </div>
 
-        <!-- PLANS PAGE -->
+        <!-- PLANS -->
         <div class="page" id="page-plans">
             <div class="page-title">Planos de Cultivo</div>
             <div class="tab-bar">
-                <div class="tab active" onclick="showTab('plans','create',this)">Criar plano</div>
+                <div class="tab active" onclick="showTab('plans','create',this)">Criar</div>
                 <div class="tab" onclick="showTab('plans','list',this)">Listar</div>
             </div>
-
             <div class="tab-content active" id="plans-create">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-                        <h3 style="margin:0">Novo plano de cultivo</h3>
-                        <span class="url-badge">POST /plans</span>
+                        <h3 style="margin:0">Novo plano</h3><span class="url-badge">POST /plans</span>
                     </div>
                     <div class="form-group" style="margin-bottom:12px">
-                        <label>Tipo de plano</label>
-                        <select id="plan-type" onchange="toggleAuth()">
-                            <option value="">Seleciona um tipo</option>
+                        <label>Tipo</label>
+                        <select id="plan-type" onchange="togglePlanAuth()">
+                            <option value="">Seleciona</option>
                             <option value="regular">Regular</option>
                             <option value="emergencia">Emergência</option>
                             <option value="pontual">Pontual</option>
                         </select>
                     </div>
-                    <div class="form-group" style="margin-bottom:12px;display:none" id="auth-field">
+                    <div class="form-group" style="margin-bottom:12px;display:none" id="plan-auth-field">
                         <label>Autorização do Responsável Técnico</label>
                         <input type="text" id="plan-auth" placeholder="ex: responsavel1" />
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Temp. mínima (ºC) [18-28]</label>
-                            <input type="number" id="plan-mintemp" placeholder="ex: 18" />
-                        </div>
-                        <div class="form-group">
-                            <label>Temp. máxima (ºC) [18-28]</label>
-                            <input type="number" id="plan-maxtemp" placeholder="ex: 25" />
-                        </div>
+                        <div class="form-group"><label>Temp. mín. [18-28]</label><input type="number" id="plan-mintemp" placeholder="18" /></div>
+                        <div class="form-group"><label>Temp. máx. [18-28]</label><input type="number" id="plan-maxtemp" placeholder="25" /></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Humidade mínima (%) [40-80]</label>
-                            <input type="number" id="plan-minhum" placeholder="ex: 40" />
-                        </div>
-                        <div class="form-group">
-                            <label>Humidade máxima (%) [40-80]</label>
-                            <input type="number" id="plan-maxhum" placeholder="ex: 70" />
-                        </div>
+                        <div class="form-group"><label>Humidade mín. [40-80]</label><input type="number" id="plan-minhum" placeholder="40" /></div>
+                        <div class="form-group"><label>Humidade máx. [40-80]</label><input type="number" id="plan-maxhum" placeholder="70" /></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Luminosidade mínima (lux) [5000-25000]</label>
-                            <input type="number" id="plan-minlux" placeholder="ex: 5000" />
-                        </div>
-                        <div class="form-group">
-                            <label>Luminosidade máxima (lux) [5000-25000]</label>
-                            <input type="number" id="plan-maxlux" placeholder="ex: 20000" />
-                        </div>
+                        <div class="form-group"><label>Luminosidade mín. [5000-25000]</label><input type="number" id="plan-minlux" placeholder="5000" /></div>
+                        <div class="form-group"><label>Luminosidade máx. [5000-25000]</label><input type="number" id="plan-maxlux" placeholder="20000" /></div>
                     </div>
-                    <div class="form-group" style="margin-bottom:12px">
-                        <label>Duração do ciclo (dias) [1-365]</label>
-                        <input type="number" id="plan-cycle" placeholder="ex: 90" />
-                    </div>
-                    <button class="btn btn-primary btn-sm" onclick="doCreatePlan()">
-                        <i class="ti ti-plus"></i> Criar plano
-                    </button>
+                    <div class="form-group" style="margin-bottom:12px"><label>Duração do ciclo [1-365]</label><input type="number" id="plan-cycle" placeholder="90" /></div>
+                    <button class="btn btn-primary btn-sm" onclick="doCreatePlan()"><i class="ti ti-plus"></i> Criar plano</button>
                     <div class="alert" id="plan-create-alert"></div>
                 </div>
             </div>
-
             <div class="tab-content" id="plans-list">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-                        <h3 style="margin:0">Planos registados</h3>
-                        <span class="url-badge">GET /plans</span>
+                        <h3 style="margin:0">Planos registados</h3><span class="url-badge">GET /plans</span>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="listPlans()" style="margin-bottom:1rem">
-                        <i class="ti ti-refresh"></i> Atualizar
-                    </button>
-                    <div id="plans-list-content">
-                        <p style="font-size:13px;color:#666">Clica em "Atualizar" para ver os planos.</p>
-                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="listPlans()" style="margin-bottom:1rem"><i class="ti ti-refresh"></i> Atualizar</button>
+                    <div id="plans-list-content"><p style="font-size:13px;color:#666">Clica em "Atualizar".</p></div>
                 </div>
             </div>
         </div>
 
-        <!-- ACCOUNT PAGE -->
+        <!-- BATCHES -->
+        <div class="page" id="page-batches">
+            <div class="page-title">Lotes de Cultivo</div>
+            <div class="tab-bar">
+                <div class="tab active" onclick="showTab('batches','create',this)">Criar</div>
+                <div class="tab" onclick="showTab('batches','state',this)">Alterar Estado</div>
+                <div class="tab" onclick="showTab('batches','losses',this)">Registar Perda</div>
+                <div class="tab" onclick="showTab('batches','list',this)">Listar</div>
+            </div>
+            <div class="tab-content active" id="batches-create">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Novo lote</h3><span class="url-badge">POST /batches</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>ID da Erva</label><input type="number" id="batch-herbid" placeholder="ex: 1" /></div>
+                        <div class="form-group"><label>ID do Plano</label><input type="number" id="batch-planid" placeholder="ex: 1" /></div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="doCreateBatch()"><i class="ti ti-plus"></i> Criar lote</button>
+                    <div class="alert" id="batch-create-alert"></div>
+                </div>
+            </div>
+            <div class="tab-content" id="batches-state">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Alterar estado</h3><span class="url-badge">PATCH /batches/:id/state</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>ID do Lote</label><input type="number" id="batch-state-id" placeholder="ex: 1" /></div>
+                        <div class="form-group">
+                            <label>Novo Estado</label>
+                            <select id="batch-new-state">
+                                <option value="concluido">Concluído</option>
+                                <option value="comprometido">Comprometido</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="doBatchState()"><i class="ti ti-refresh"></i> Atualizar estado</button>
+                    <div class="alert" id="batch-state-alert"></div>
+                </div>
+            </div>
+            <div class="tab-content" id="batches-losses">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Registar perda</h3><span class="url-badge">POST /batches/:id/losses</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>ID do Lote</label><input type="number" id="batch-loss-id" placeholder="ex: 1" /></div>
+                        <div class="form-group"><label>Perda (%) [0-100]</label><input type="number" id="batch-loss-value" placeholder="ex: 20" /></div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="doBatchLoss()"><i class="ti ti-minus"></i> Registar perda</button>
+                    <div class="alert" id="batch-loss-alert"></div>
+                </div>
+            </div>
+            <div class="tab-content" id="batches-list">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Lotes registados</h3><span class="url-badge">GET /batches</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="listBatches()" style="margin-bottom:1rem"><i class="ti ti-refresh"></i> Atualizar</button>
+                    <div id="batches-list-content"><p style="font-size:13px;color:#666">Clica em "Atualizar".</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEASUREMENTS -->
+        <div class="page" id="page-measurements">
+            <div class="page-title">Medições Ambientais</div>
+            <div class="tab-bar">
+                <div class="tab active" onclick="showTab('measurements','create',this)">Registar</div>
+                <div class="tab" onclick="showTab('measurements','list',this)">Listar</div>
+            </div>
+            <div class="tab-content active" id="measurements-create">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Nova medição</h3><span class="url-badge">POST /measurements</span>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px"><label>ID do Lote</label><input type="number" id="meas-batchid" placeholder="ex: 1" /></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Temperatura (ºC)</label><input type="number" id="meas-temp" placeholder="ex: 23" /></div>
+                        <div class="form-group"><label>Humidade (%)</label><input type="number" id="meas-hum" placeholder="ex: 60" /></div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px"><label>Luminosidade (lux)</label><input type="number" id="meas-lux" placeholder="ex: 15000" /></div>
+                    <button class="btn btn-primary btn-sm" onclick="doCreateMeasurement()"><i class="ti ti-plus"></i> Registar</button>
+                    <div class="alert" id="meas-create-alert"></div>
+                </div>
+            </div>
+            <div class="tab-content" id="measurements-list">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Medições registadas</h3><span class="url-badge">GET /measurements</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="listMeasurements()" style="margin-bottom:1rem"><i class="ti ti-refresh"></i> Atualizar</button>
+                    <div id="measurements-list-content"><p style="font-size:13px;color:#666">Clica em "Atualizar".</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERTS -->
+        <div class="page" id="page-alerts">
+            <div class="page-title">Alertas</div>
+            <div class="tab-bar">
+                <div class="tab active" onclick="showTab('alerts','create',this)">Criar</div>
+                <div class="tab" onclick="showTab('alerts','resolve',this)">Resolver</div>
+                <div class="tab" onclick="showTab('alerts','list',this)">Listar</div>
+            </div>
+            <div class="tab-content active" id="alerts-create">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Novo alerta</h3><span class="url-badge">POST /alerts</span>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px">
+                        <label>Classificação</label>
+                        <select id="alert-class">
+                            <option value="Informativo">Informativo</option>
+                            <option value="Aviso">Aviso</option>
+                            <option value="Critico">Crítico</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px"><label>ID do Lote</label><input type="number" id="alert-batchid" placeholder="ex: 1" /></div>
+                    <div class="form-group" style="margin-bottom:12px"><label>Mensagem</label><input type="text" id="alert-msg" placeholder="ex: Temperatura elevada" /></div>
+                    <button class="btn btn-primary btn-sm" onclick="doCreateAlert()"><i class="ti ti-plus"></i> Criar alerta</button>
+                    <div class="alert" id="alert-create-alert"></div>
+                </div>
+            </div>
+            <div class="tab-content" id="alerts-resolve">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Resolver alerta</h3><span class="url-badge">PATCH /alerts/:id</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>ID do Alerta</label><input type="number" id="alert-resolve-id" placeholder="ex: 1" /></div>
+                        <div class="form-group">
+                            <label>Decisão</label>
+                            <select id="alert-decision" onchange="toggleJustification()">
+                                <option value="Resolvido">Resolvido</option>
+                                <option value="Ignorado">Ignorado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px;display:none" id="justification-field">
+                        <label>Justificação (obrigatória para Ignorado, 10-500 chars)</label>
+                        <input type="text" id="alert-justification" placeholder="Motivo pelo qual o alerta é ignorado..." />
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="doResolveAlert()"><i class="ti ti-check"></i> Confirmar</button>
+                    <div class="alert" id="alert-resolve-alert"></div>
+                </div>
+            </div>
+            <div class="tab-content" id="alerts-list">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Alertas registados</h3><span class="url-badge">GET /alerts</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="listAlerts()" style="margin-bottom:1rem"><i class="ti ti-refresh"></i> Atualizar</button>
+                    <div id="alerts-list-content"><p style="font-size:13px;color:#666">Clica em "Atualizar".</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTOMATION -->
+        <div class="page" id="page-automation">
+            <div class="page-title">Automação</div>
+            <div class="tab-bar">
+                <div class="tab active" onclick="showTab('automation','mode',this)">Modo</div>
+                <div class="tab" onclick="showTab('automation','rules',this)">Criar Regra</div>
+                <div class="tab" onclick="showTab('automation','list',this)">Listar</div>
+            </div>
+            <div class="tab-content active" id="automation-mode">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Modo de automação</h3><span class="url-badge">PATCH /automation/mode</span>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px">
+                        <label>Modo</label>
+                        <select id="auto-mode">
+                            <option value="Manual">Manual</option>
+                            <option value="Automatico">Automático</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="doSetMode()"><i class="ti ti-settings"></i> Alterar modo</button>
+                    <div class="alert" id="auto-mode-alert"></div>
+                </div>
+            </div>
+            <div class="tab-content" id="automation-rules">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Nova regra</h3><span class="url-badge">POST /automation</span>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px">
+                        <label>Ação</label>
+                        <select id="auto-action">
+                            <option value="rega">Rega</option>
+                            <option value="fertilizacao">Fertilização</option>
+                            <option value="colheita">Colheita</option>
+                            <option value="monitorizacao">Monitorização</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px"><label>Condição</label><input type="text" id="auto-condition" placeholder="ex: humidity < threshold" /></div>
+                    <div class="form-group" style="margin-bottom:12px"><label>Threshold</label><input type="number" id="auto-threshold" placeholder="ex: 40" /></div>
+                    <button class="btn btn-primary btn-sm" onclick="doCreateRule()"><i class="ti ti-plus"></i> Criar regra</button>
+                    <div class="alert" id="auto-rules-alert"></div>
+                </div>
+            </div>
+            <div class="tab-content" id="automation-list">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                        <h3 style="margin:0">Estado da automação</h3><span class="url-badge">GET /automation</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="listAutomation()" style="margin-bottom:1rem"><i class="ti ti-refresh"></i> Atualizar</button>
+                    <div id="automation-list-content"><p style="font-size:13px;color:#666">Clica em "Atualizar".</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCOUNT -->
         <div class="page" id="page-account">
             <div class="page-title">Conta</div>
             <div class="tab-bar">
                 <div class="tab active" onclick="showTab('account','info',this)">Informação</div>
                 <div class="tab" onclick="showTab('account','refresh',this)">Refresh Token</div>
-                <div class="tab" onclick="showTab('account','register',this)">Registar utilizador</div>
+                <div class="tab" onclick="showTab('account','register',this)">Novo utilizador</div>
             </div>
-
             <div class="tab-content active" id="account-info">
                 <div class="card">
                     <h3>Sessão atual</h3>
-                    <div class="list-item">
-                        <span style="color:#666">Username</span>
-                        <span id="info-username" style="font-weight:500"></span>
-                    </div>
-                    <div class="list-item">
-                        <span style="color:#666">Perfil</span>
-                        <span id="info-role"></span>
-                    </div>
-                    <div class="list-item">
-                        <span style="color:#666">Token</span>
-                        <span style="font-size:12px;font-family:monospace;color:#666" id="info-token"></span>
-                    </div>
+                    <div class="list-item"><span style="color:#666">Username</span><span id="info-username" style="font-weight:500"></span></div>
+                    <div class="list-item"><span style="color:#666">Perfil</span><span id="info-role"></span></div>
+                    <div class="list-item"><span style="color:#666">Token</span><span style="font-size:12px;font-family:monospace;color:#666" id="info-token"></span></div>
                 </div>
             </div>
-
             <div class="tab-content" id="account-refresh">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-                        <h3 style="margin:0">Renovar token</h3>
-                        <span class="url-badge">POST /auth/refresh</span>
+                        <h3 style="margin:0">Renovar token</h3><span class="url-badge">POST /auth/refresh</span>
                     </div>
-                    <div class="form-group" style="margin-bottom:12px">
-                        <label>Refresh Token</label>
-                        <input type="text" id="refresh-token-input" placeholder="Cole aqui o refresh token" />
-                    </div>
-                    <button class="btn btn-primary btn-sm" onclick="doRefresh()">
-                        <i class="ti ti-refresh"></i> Renovar
-                    </button>
+                    <div class="form-group" style="margin-bottom:12px"><label>Refresh Token</label><input type="text" id="refresh-token-input" placeholder="Cole aqui o refresh token" /></div>
+                    <button class="btn btn-primary btn-sm" onclick="doRefresh()"><i class="ti ti-refresh"></i> Renovar</button>
                     <div class="alert" id="refresh-alert"></div>
                 </div>
             </div>
-
             <div class="tab-content" id="account-register">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-                        <h3 style="margin:0">Registar novo utilizador</h3>
-                        <span class="url-badge">POST /auth/register</span>
+                        <h3 style="margin:0">Registar novo utilizador</h3><span class="url-badge">POST /auth/register</span>
                     </div>
-                    <div class="form-group" style="margin-bottom:12px">
-                        <label>Username</label>
-                        <input type="text" id="new-reg-username" placeholder="ex: joao" />
-                    </div>
-                    <div class="form-group" style="margin-bottom:12px">
-                        <label>Password</label>
-                        <input type="password" id="new-reg-password" placeholder="••••••" />
-                    </div>
+                    <div class="form-group" style="margin-bottom:12px"><label>Username</label><input type="text" id="new-reg-username" placeholder="ex: joao" /></div>
+                    <div class="form-group" style="margin-bottom:12px"><label>Password</label><input type="password" id="new-reg-password" placeholder="••••••" /></div>
                     <div class="form-group" style="margin-bottom:12px">
                         <label>Perfil</label>
                         <select id="new-reg-role">
-                            <option value="">Seleciona um perfil</option>
+                            <option value="">Seleciona</option>
                             <option value="Tecnico">Tecnico</option>
                             <option value="Responsavel">Responsavel</option>
                             <option value="Administrador">Administrador</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="doRegisterNew()">
-                        <i class="ti ti-user-plus"></i> Registar
-                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="doRegisterNew()"><i class="ti ti-user-plus"></i> Registar</button>
                     <div class="alert" id="new-register-alert"></div>
                 </div>
             </div>
@@ -431,19 +536,12 @@
 
 <script>
     const API = 'http://localhost:3000';
-    let token = null;
-    let refreshToken = null;
-    let currentUser = null;
+    let token = null, refreshToken = null, currentUser = null;
 
-    function showAlert(id, message, isError) {
+    function showAlert(id, msg, isError) {
       const el = document.getElementById(id);
       el.className = 'alert ' + (isError ? 'error' : 'success');
-      el.innerHTML = '<i class="ti ti-' + (isError ? 'alert-circle' : 'circle-check') + '"></i> ' + message;
-    }
-
-    function showRegister() {
-      const s = document.getElementById('register-section');
-      s.style.display = s.style.display === 'none' ? 'block' : 'none';
+      el.innerHTML = '<i class="ti ti-' + (isError ? 'alert-circle' : 'circle-check') + '"></i> ' + msg;
     }
 
     function showPage(page) {
@@ -460,9 +558,19 @@
       el.classList.add('active');
     }
 
-    function toggleAuth() {
-      const type = document.getElementById('plan-type').value;
-      document.getElementById('auth-field').style.display = type === 'pontual' ? 'flex' : 'none';
+    function toggleRegister() {
+      const s = document.getElementById('register-section');
+      s.style.display = s.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function togglePlanAuth() {
+      document.getElementById('plan-auth-field').style.display =
+        document.getElementById('plan-type').value === 'pontual' ? 'flex' : 'none';
+    }
+
+    function toggleJustification() {
+      document.getElementById('justification-field').style.display =
+        document.getElementById('alert-decision').value === 'Ignorado' ? 'flex' : 'none';
     }
 
     function enterDashboard(username, role) {
@@ -478,9 +586,7 @@
     }
 
     function doLogout() {
-      token = null;
-      refreshToken = null;
-      currentUser = null;
+      token = null; refreshToken = null; currentUser = null;
       document.getElementById('dashboard').style.display = 'none';
       document.getElementById('login-page').style.display = 'flex';
       document.getElementById('login-username').value = '';
@@ -500,6 +606,7 @@
       }
     }
 
+    // AUTH
     async function doLogin() {
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
@@ -515,48 +622,36 @@
     }
 
     async function doRegister() {
-      const username = document.getElementById('reg-username').value;
-      const password = document.getElementById('reg-password').value;
-      const role = document.getElementById('reg-role').value;
-      const r = await apiCall('POST', '/auth/register', { username, password, role });
+      const r = await apiCall('POST', '/auth/register', {
+        username: document.getElementById('reg-username').value,
+        password: document.getElementById('reg-password').value,
+        role: document.getElementById('reg-role').value
+      });
       if (r.ok) {
         showAlert('register-alert', 'Conta criada! Podes agora fazer login.', false);
-        document.getElementById('reg-username').value = '';
-        document.getElementById('reg-password').value = '';
-        document.getElementById('reg-role').value = '';
       } else {
         showAlert('register-alert', r.data.error || 'Erro ao criar conta.', true);
       }
     }
 
     async function doRegisterNew() {
-      const username = document.getElementById('new-reg-username').value;
-      const password = document.getElementById('new-reg-password').value;
-      const role = document.getElementById('new-reg-role').value;
-      const r = await apiCall('POST', '/auth/register', { username, password, role });
-      if (r.ok) {
-        showAlert('new-register-alert', 'Utilizador "' + username + '" registado com perfil ' + role + '.', false);
-        document.getElementById('new-reg-username').value = '';
-        document.getElementById('new-reg-password').value = '';
-        document.getElementById('new-reg-role').value = '';
-      } else {
-        showAlert('new-register-alert', r.data.error || 'Erro ao registar utilizador.', true);
-      }
+      const r = await apiCall('POST', '/auth/register', {
+        username: document.getElementById('new-reg-username').value,
+        password: document.getElementById('new-reg-password').value,
+        role: document.getElementById('new-reg-role').value
+      });
+      showAlert('new-register-alert', r.ok ? 'Utilizador registado com sucesso!' : r.data.error, !r.ok);
     }
 
     async function doRefresh() {
       const rt = document.getElementById('refresh-token-input').value || refreshToken;
       if (!rt) { showAlert('refresh-alert', 'Sem refresh token disponível.', true); return; }
       const r = await apiCall('POST', '/auth/refresh', { refreshToken: rt });
-      if (r.ok) {
-        token = r.data.token;
-        document.getElementById('info-token').textContent = token.substring(0,30) + '...';
-        showAlert('refresh-alert', 'Token renovado com sucesso!', false);
-      } else {
-        showAlert('refresh-alert', r.data.error || 'Erro ao renovar token.', true);
-      }
+      if (r.ok) { token = r.data.token; showAlert('refresh-alert', 'Token renovado!', false); }
+      else showAlert('refresh-alert', r.data.error || 'Erro.', true);
     }
 
+    // HERBS
     async function doCreateHerb() {
       const body = {
         name: document.getElementById('herb-name').value,
@@ -570,12 +665,7 @@
         maxLuminosity: parseFloat(document.getElementById('herb-maxlux').value),
       };
       const r = await apiCall('POST', '/herbs', body);
-      if (r.ok) {
-        showAlert('herb-create-alert', 'Erva "' + body.name + '" criada com sucesso!', false);
-        ['herb-name','herb-sci','herb-cycle','herb-mintemp','herb-maxtemp','herb-minhum','herb-maxhum','herb-minlux','herb-maxlux'].forEach(id => document.getElementById(id).value = '');
-      } else {
-        showAlert('herb-create-alert', r.data.error || 'Erro ao criar erva.', true);
-      }
+      showAlert('herb-create-alert', r.ok ? 'Erva "' + body.name + '" criada!' : r.data.error, !r.ok);
     }
 
     async function doImport() {
@@ -592,30 +682,20 @@
         invalid: [{ name: '', scientificName: '', cycledays: 0, minTemp: 0, maxTemp: 0, minHumidity: 0, maxHumidity: 0, minLuminosity: 0, maxLuminosity: 0 }],
         empty: []
       };
-      const r = await apiCall('POST', '/herbs/import', { rows: scenarios[scenario] });
-      if (r.ok) {
-        showAlert('import-alert', 'Importação concluída: ' + r.data.success + ' importadas, ' + r.data.failed + ' falharam.', r.data.failed > 0 && r.data.success === 0);
-      } else {
-        showAlert('import-alert', r.data.error || 'Erro na importação.', true);
-      }
+      const r = await apiCall('POST', '/herbs/import', { rows: scenarios[scenario], userRole: currentUser?.role });
+      showAlert('import-alert', r.ok ? 'Importação: ' + r.data.success + ' importadas, ' + r.data.failed + ' falharam.' : r.data.error, !r.ok);
     }
 
     async function listHerbs() {
       const r = await apiCall('GET', '/herbs');
       const el = document.getElementById('herbs-list-content');
-      if (!r.ok) { el.innerHTML = '<p style="font-size:13px;color:#991B1B">' + (r.data.error || 'Erro.') + '</p>'; return; }
+      if (!r.ok) { el.innerHTML = '<p style="color:#991B1B;font-size:13px">' + r.data.error + '</p>'; return; }
       const list = Array.isArray(r.data) ? r.data : [];
-      if (list.length === 0) { el.innerHTML = '<p style="font-size:13px;color:#666">Nenhuma erva registada.</p>'; return; }
-      el.innerHTML = list.map(h => `
-        <div class="list-item">
-          <div>
-            <div style="font-weight:500">${h.name}</div>
-            <div style="font-size:12px;color:#666">${h.scientificName} · ${h.cycledays} dias · ${h.minTemp}-${h.maxTemp}ºC</div>
-          </div>
-          <span class="badge badge-success">ID: ${h.id}</span>
-        </div>`).join('');
+      if (!list.length) { el.innerHTML = '<p style="font-size:13px;color:#666">Nenhuma erva registada.</p>'; return; }
+      el.innerHTML = list.map(h => `<div class="list-item"><div><div style="font-weight:500">${h.name}</div><div style="font-size:12px;color:#666">${h.scientificName} · ${h.cycledays} dias</div></div><span class="badge badge-success">ID: ${h.id}</span></div>`).join('');
     }
 
+    // PLANS
     async function doCreatePlan() {
       const body = {
         type: document.getElementById('plan-type').value,
@@ -629,31 +709,129 @@
         authorizedBy: document.getElementById('plan-auth').value || null,
       };
       const r = await apiCall('POST', '/plans', body);
-      if (r.ok) {
-        showAlert('plan-create-alert', 'Plano ' + body.type + ' criado com sucesso!', false);
-        ['plan-mintemp','plan-maxtemp','plan-minhum','plan-maxhum','plan-minlux','plan-maxlux','plan-cycle','plan-auth'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('plan-type').value = '';
-        document.getElementById('auth-field').style.display = 'none';
-      } else {
-        showAlert('plan-create-alert', r.data.error || 'Erro ao criar plano.', true);
-      }
+      showAlert('plan-create-alert', r.ok ? 'Plano ' + body.type + ' criado!' : r.data.error, !r.ok);
     }
 
     async function listPlans() {
       const r = await apiCall('GET', '/plans');
       const el = document.getElementById('plans-list-content');
-      if (!r.ok) { el.innerHTML = '<p style="font-size:13px;color:#991B1B">' + (r.data.error || 'Erro.') + '</p>'; return; }
+      if (!r.ok) { el.innerHTML = '<p style="color:#991B1B;font-size:13px">' + r.data.error + '</p>'; return; }
       const list = Array.isArray(r.data) ? r.data : [];
-      if (list.length === 0) { el.innerHTML = '<p style="font-size:13px;color:#666">Nenhum plano registado.</p>'; return; }
+      if (!list.length) { el.innerHTML = '<p style="font-size:13px;color:#666">Nenhum plano registado.</p>'; return; }
       const badges = { regular: 'badge-info', emergencia: 'badge-danger', pontual: 'badge-warning' };
-      el.innerHTML = list.map(p => `
-        <div class="list-item">
-          <div>
-            <div style="font-weight:500">Plano #${p.id}</div>
-            <div style="font-size:12px;color:#666">Temp: ${p.minTemp}-${p.maxTemp}ºC · Hum: ${p.minHumidity}-${p.maxHumidity}% · ${p.cycleDays} dias</div>
-          </div>
-          <span class="badge ${badges[p.type] || 'badge-info'}">${p.type}</span>
-        </div>`).join('');
+      el.innerHTML = list.map(p => `<div class="list-item"><div><div style="font-weight:500">Plano #${p.id}</div><div style="font-size:12px;color:#666">Temp: ${p.minTemp}-${p.maxTemp}ºC · Hum: ${p.minHumidity}-${p.maxHumidity}% · ${p.cycleDays} dias</div></div><span class="badge ${badges[p.type]||'badge-info'}">${p.type}</span></div>`).join('');
+    }
+
+    // BATCHES
+    async function doCreateBatch() {
+      const r = await apiCall('POST', '/batches', {
+        herbId: parseInt(document.getElementById('batch-herbid').value),
+        planId: parseInt(document.getElementById('batch-planid').value)
+      });
+      showAlert('batch-create-alert', r.ok ? 'Lote #' + r.data.id + ' criado com estado "ativo"!' : r.data.error, !r.ok);
+    }
+
+    async function doBatchState() {
+      const id = document.getElementById('batch-state-id').value;
+      const state = document.getElementById('batch-new-state').value;
+      const r = await apiCall('PATCH', '/batches/' + id + '/state', { state });
+      showAlert('batch-state-alert', r.ok ? 'Estado do lote #' + id + ' alterado para "' + state + '"!' : r.data.error, !r.ok);
+    }
+
+    async function doBatchLoss() {
+      const id = document.getElementById('batch-loss-id').value;
+      const loss = parseFloat(document.getElementById('batch-loss-value').value);
+      const r = await apiCall('POST', '/batches/' + id + '/losses', { loss });
+      showAlert('batch-loss-alert', r.ok ? 'Perda de ' + loss + '% registada no lote #' + id + '!' : r.data.error, !r.ok);
+    }
+
+    async function listBatches() {
+      const r = await apiCall('GET', '/batches');
+      const el = document.getElementById('batches-list-content');
+      if (!r.ok) { el.innerHTML = '<p style="color:#991B1B;font-size:13px">' + r.data.error + '</p>'; return; }
+      const list = Array.isArray(r.data) ? r.data : [];
+      if (!list.length) { el.innerHTML = '<p style="font-size:13px;color:#666">Nenhum lote registado.</p>'; return; }
+      const badges = { ativo: 'badge-success', concluido: 'badge-info', comprometido: 'badge-danger' };
+      el.innerHTML = list.map(b => `<div class="list-item"><div><div style="font-weight:500">Lote #${b.id}</div><div style="font-size:12px;color:#666">Erva: ${b.herbId} · Plano: ${b.planId} · Perdas: ${b.losses}%${b.productivity !== null ? ' · Produtividade: ' + b.productivity + '%' : ''}</div></div><span class="badge ${badges[b.state]||'badge-gray'}">${b.state}</span></div>`).join('');
+    }
+
+    // MEASUREMENTS
+    async function doCreateMeasurement() {
+      const r = await apiCall('POST', '/measurements', {
+        temperature: parseFloat(document.getElementById('meas-temp').value),
+        humidity: parseFloat(document.getElementById('meas-hum').value),
+        luminosity: parseFloat(document.getElementById('meas-lux').value),
+        batchId: parseInt(document.getElementById('meas-batchid').value)
+      });
+      showAlert('meas-create-alert', r.ok ? 'Medição registada com sucesso!' : r.data.error, !r.ok);
+    }
+
+    async function listMeasurements() {
+      const r = await apiCall('GET', '/measurements');
+      const el = document.getElementById('measurements-list-content');
+      if (!r.ok) { el.innerHTML = '<p style="color:#991B1B;font-size:13px">' + r.data.error + '</p>'; return; }
+      const list = Array.isArray(r.data) ? r.data : [];
+      if (!list.length) { el.innerHTML = '<p style="font-size:13px;color:#666">Nenhuma medição registada.</p>'; return; }
+      el.innerHTML = list.map(m => `<div class="list-item"><div><div style="font-weight:500">Medição #${m.id} — Lote ${m.batchId}</div><div style="font-size:12px;color:#666">Temp: ${m.temperature}ºC · Hum: ${m.humidity}% · Lux: ${m.luminosity}</div></div><span class="badge badge-gray">${m.createdAt.substring(0,10)}</span></div>`).join('');
+    }
+
+    // ALERTS
+    async function doCreateAlert() {
+      const r = await apiCall('POST', '/alerts', {
+        classification: document.getElementById('alert-class').value,
+        batchId: parseInt(document.getElementById('alert-batchid').value),
+        message: document.getElementById('alert-msg').value
+      });
+      showAlert('alert-create-alert', r.ok ? 'Alerta criado com sucesso!' : r.data.error, !r.ok);
+    }
+
+    async function doResolveAlert() {
+      const id = document.getElementById('alert-resolve-id').value;
+      const r = await apiCall('PATCH', '/alerts/' + id, {
+        decision: document.getElementById('alert-decision').value,
+        justification: document.getElementById('alert-justification').value || null
+      });
+      showAlert('alert-resolve-alert', r.ok ? 'Alerta #' + id + ' atualizado para "' + r.data.status + '"!' : r.data.error, !r.ok);
+    }
+
+    async function listAlerts() {
+      const r = await apiCall('GET', '/alerts');
+      const el = document.getElementById('alerts-list-content');
+      if (!r.ok) { el.innerHTML = '<p style="color:#991B1B;font-size:13px">' + r.data.error + '</p>'; return; }
+      const list = Array.isArray(r.data) ? r.data : [];
+      if (!list.length) { el.innerHTML = '<p style="font-size:13px;color:#666">Nenhum alerta registado.</p>'; return; }
+      const badges = { Informativo: 'badge-info', Aviso: 'badge-warning', Critico: 'badge-danger' };
+      const status = { pendente: 'badge-warning', resolvido: 'badge-success', ignorado: 'badge-gray' };
+      el.innerHTML = list.map(a => `<div class="list-item"><div><div style="font-weight:500">${a.message}</div><div style="font-size:12px;color:#666">Lote ${a.batchId} · <span class="badge ${badges[a.classification]||'badge-gray'}" style="font-size:11px">${a.classification}</span></div></div><span class="badge ${status[a.status]||'badge-gray'}">${a.status}</span></div>`).join('');
+    }
+
+    // AUTOMATION
+    async function doSetMode() {
+      const r = await apiCall('PATCH', '/automation/mode', { mode: document.getElementById('auto-mode').value });
+      showAlert('auto-mode-alert', r.ok ? 'Modo alterado para "' + r.data.mode + '"!' : r.data.error, !r.ok);
+    }
+
+    async function doCreateRule() {
+      const r = await apiCall('POST', '/automation', {
+        action: document.getElementById('auto-action').value,
+        condition: document.getElementById('auto-condition').value,
+        threshold: parseFloat(document.getElementById('auto-threshold').value)
+      });
+      showAlert('auto-rules-alert', r.ok ? 'Regra criada com sucesso!' : r.data.error, !r.ok);
+    }
+
+    async function listAutomation() {
+      const r = await apiCall('GET', '/automation');
+      const el = document.getElementById('automation-list-content');
+      if (!r.ok) { el.innerHTML = '<p style="color:#991B1B;font-size:13px">' + r.data.error + '</p>'; return; }
+      const modeColors = { Manual: 'badge-warning', Automatico: 'badge-success' };
+      let html = `<div class="list-item"><span style="color:#666">Modo atual</span><span class="badge ${modeColors[r.data.mode]||'badge-gray'}">${r.data.mode}</span></div>`;
+      if (r.data.rules && r.data.rules.length) {
+        html += r.data.rules.map(rule => `<div class="list-item"><div><div style="font-weight:500">${rule.action}</div><div style="font-size:12px;color:#666">${rule.condition} · threshold: ${rule.threshold}</div></div><span class="badge ${rule.active ? 'badge-success' : 'badge-gray'}">${rule.active ? 'ativa' : 'inativa'}</span></div>`).join('');
+      } else {
+        html += '<p style="font-size:13px;color:#666;margin-top:0.5rem">Nenhuma regra criada.</p>';
+      }
+      el.innerHTML = html;
     }
 </script>
 </body>
