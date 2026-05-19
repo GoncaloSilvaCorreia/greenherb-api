@@ -21,9 +21,15 @@ app.use('/batches', batchesRoutes);
 app.use('/automation', automationRoutes);
 
 if (process.env.NODE_ENV !== 'test') {
-    const { seedHerbs, seedPlans } = require('./data/seed');
-    seedHerbs();
-    seedPlans();
+    const { seedUsers, seedHerbs, seedPlans, seedBatches, seedMeasurements, seedAlerts, seedAutomation } = require('./data/seed');
+    seedUsers().then(() => {
+        seedHerbs();
+        seedPlans();
+        seedBatches();
+        seedMeasurements();
+        seedAlerts();
+        seedAutomation();
+    });
 
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
