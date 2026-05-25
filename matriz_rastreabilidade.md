@@ -468,3 +468,6 @@
 | RN-22 | Criação de regras de automação | TU114, TU115, TU116, TU117 |
 | RN-23 | Motor de automação | TU118, TU119, TU120, TU121, TU122 |
 | RN-24 | Validação de campos nulos/vazios | TU123, TU124, TU125, TU126, TU127, TU128 |
+
+
+****
