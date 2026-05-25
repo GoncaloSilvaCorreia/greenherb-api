@@ -469,5 +469,59 @@
 | RN-23 | Motor de automação | TU118, TU119, TU120, TU121, TU122 |
 | RN-24 | Validação de campos nulos/vazios | TU123, TU124, TU125, TU126, TU127, TU128 |
 
+---
 
-****
+## Sprint 6 — Duplos de Teste (Stubs e Mocks)
+
+### Contexto
+
+| Duplo | Tipo | Gateway | Justificação |
+|-------|------|---------|-------------|
+| TemperatureGatewayStub | **Stub** | `temperatureGateway` | A medição de temperatura é automática — a app **recebe** dados do sensor. O Stub substitui o sensor devolvendo valores controlados sem precisar de hardware real. |
+| NotificationGatewayMock | **Mock** | `notificationGateway` | O envio de notificações é uma ação da app para o exterior. O Mock **verifica** que a notificação foi enviada corretamente com os argumentos certos. |
+
+### Testes com Stub — TemperatureGateway
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | Input (Stub devolve) | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|----------------------|--------------------|---------------|
+| SP01a | RN-25: temp. normal → sem alerta | (monitoringService interno) | Unidade | Stub | `getTemperature → 23` | alert=null, notified=false, sendNotification NÃO chamado | Plan com limites [18-28] |
+| SP01b | RN-25: temp. acima → alerta Aviso | (monitoringService interno) | Unidade | Stub | `getTemperature → 30` | alert.classification="Aviso", notified=true | Plan com limites [18-28] |
+| SP01c | RN-25: temp. crítica → alerta Critico | (monitoringService interno) | Unidade | Stub | `getTemperature → 34` | alert.classification="Critico", notified=true | Plan com limites [18-28] |
+| SP01d | RN-25: temp. abaixo → alerta Aviso | (monitoringService interno) | Unidade | Stub | `getTemperature → 10` | alert not null, notified=true | Plan com limites [18-28] |
+| SP01e | RN-25: gateway falha → erro propagado | (monitoringService interno) | Unidade | Stub | `getTemperature → rejects("Sensor indisponível")` | Lança erro "Sensor indisponível" | Nenhuma |
+
+### Testes com Mock — NotificationGateway
+
+| ID | Requisito / Regra | Endpoint | Nível | Técnica | Input | Resultado Esperado | Pré-condições |
+|----|-------------------|----------|-------|---------|-------|--------------------|---------------|
+| SP02a | RN-26: alerta → notificação enviada ao admin | (monitoringService interno) | Unidade | Mock | temp=30 | sendNotification chamado 1x com recipient="admin@greenherb.pt" | Stub retorna 30 |
+| SP02b | RN-26: sem alerta → notificação NÃO enviada | (monitoringService interno) | Unidade | Mock | temp=23 | sendNotification NÃO chamado | Stub retorna 23 |
+| SP02c | RN-26: alerta Critico → subject contém "Critico" | (monitoringService interno) | Unidade | Mock | temp=34 | sendNotification chamado com subject contendo "Critico" | Stub retorna 34 |
+| SP02d | RN-26: alerta Aviso → subject contém "Aviso" | (monitoringService interno) | Unidade | Mock | temp=30 | sendNotification chamado com subject contendo "Aviso" | Stub retorna 30 |
+| SP02e | RN-26: falha notificação → erro propagado | (monitoringService interno) | Unidade | Mock | sendNotification rejects | Lança erro "Serviço de notificações indisponível" | Stub retorna 30 |
+| SP02f | RN-26: múltiplas leituras → 2 notificações | (monitoringService interno) | Unidade | Mock | temp=30,23,31 | sendNotification chamado exatamente 2x | Stub retorna sequência |
+
+### Diferença entre Stub e Mock
+
+| Critério | Stub (TemperatureGateway) | Mock (NotificationGateway) |
+|----------|--------------------------|---------------------------|
+| **Propósito** | Fornecer dados controlados | Verificar que foi chamado |
+| **Direcção** | Gateway → App (entrada) | App → Gateway (saída) |
+| **O que verifica** | O comportamento da app com esses dados | Se a chamada foi feita corretamente |
+| **Exemplo** | `getTemperature()` devolve 30 | `sendNotification()` foi chamado com recipient correto |
+
+### Cobertura — Sprint 6
+
+| Ficheiro | Instruções | Ramos | Funções | Linhas |
+|----------|-----------|-------|---------|--------|
+| monitoringService.js | 100% | 100% | 100% | 100% |
+| temperatureGateway.js | 66.66% | 100% | 0% | 66.66% |
+| notificationGateway.js | 66.66% | 100% | 0% | 66.66% |
+| **Testes passados** | **219/219** | | | |
+
+### Tabela Inversa — Sprint 6
+
+| Requisito | Descrição | Casos de Teste |
+|-----------|-----------|---------------|
+| RN-25 | Monitorização automática de temperatura | SP01a, SP01b, SP01c, SP01d, SP01e |
+| RN-26 | Envio de notificações de alertas | SP02a, SP02b, SP02c, SP02d, SP02e, SP02f |
